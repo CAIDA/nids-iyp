@@ -1,0 +1,15 @@
+label,description,node_count
+AS,An Autonomous System,PENDING
+BGPPrefix,An IP prefix observed announced in BGP,PENDING
+RPKIPrefix,An IP prefix covered by an RPKI ROA,PENDING
+IP,A single IP address,PENDING
+HostName,A fully-qualified domain name,PENDING
+DomainName,A non-FQDN registrable domain,PENDING
+AuthoritativeNameServer,A DNS authoritative nameserver,PENDING
+IXP,An Internet exchange point,PENDING
+Name,A name string an entity is known by,PENDING
+Ranking,A specific ranking system (e.g. CAIDA ASRank, Tranco),PENDING
+Tag,A classification label applied to a resource,PENDING
+Country,A country,PENDING
+Organization,An organization that operates one or more ASes,PENDING
+BGPCollector,A route collector (e.g. a RIPE RIS or RouteViews session),PENDING

@@ -1,466 +1,78 @@
-# nids-iyp
-How to create your own instance of Internet Yellow Pages (IYP) and run it on an NRP node
-# IYP on NRP Nautilus — Complete Setup Guide
+README ⮕ | [Introduction](Introduction.md) | [Datasets](Datasets.md) | [Cypher](Cypher.md) | [Tasks](Task.md) | [Task 1](Task-1.md) | [Task 2](Task-2.md) | [Task 3](Task-3.md) | [Notebook](nids-iyp.ipynb)
 
-## Prerequisites
+# Exploring the Internet Yellow Pages (IYP): A Graph Model of Internet Infrastructure
 
-- `kubectl` configured with access to the `esculate-caida` namespace
-- AWS S3 credentials for the `iyp-caida` bucket on `s3-west.nrp-nautilus.io`
+**GitHub:** https://github.com/CAIDA/nids-iyp
 
----
+## Learning Objectives
 
-## Step 1 — Create the PersistentVolumeClaim
+Other NIDS modules hand you one dataset at a time: an AS-ranking API, a table of BGP routes, a pile of DNS measurements, a set of RPKI ROAs. Answering a question that spans more than one of those means writing your own join logic to stitch them together. The [Internet Yellow Pages (IYP)](https://tutorial.iyp.ihr.live/) takes the opposite approach: it loads over 60 of these same kinds of Internet-measurement datasets into a single Neo4j graph database, where an Autonomous System, a BGP prefix, a hostname, and an IXP are all typed nodes connected by typed relationships. In this module you will learn Cypher, Neo4j's graph query language, and use it to explore an AS's ecosystem (ranking, IXP membership, peering), trace a single multi-hop path from an AS's announced address space to the domain names hosted inside it, and check whether an AS's RPKI authorizations match what is actually observed in BGP. By the end you should be able to write a multi-hop Cypher query that does in one step what would otherwise require joining several separate datasets by hand — and reason about what it means when independent data sources disagree about the same fact.
 
-Save as `pvc.yaml`:
+## Overview
 
-```yaml
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: iyp-storage
-  namespace: esculate-caida
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 200Gi
-  storageClassName: rook-cephfs
-```
+- step 1 [read the introduction](Introduction.md)
+- step 2 [read the dataset overview](Datasets.md)
+- step 3 [read the Cypher guide](Cypher.md)
+- step 4 [review the tasks](Task.md)
+- step 5 set up your local Python environment (see "Running Locally" below)
+- step 6 launch Jupyter and complete nids-iyp.ipynb
+  - complete each task by replacing the `# YOUR CODE HERE` sections
+  - answer all nine questions
+- step 7 save the notebook, commit, and push to github
 
-Apply:
+### Running Locally
+
+This notebook runs on your own machine — no hosted JupyterHub required. Pick one:
 
 ```bash
-kubectl apply -f pvc.yaml -n esculate-caida
-kubectl get pvc -n esculate-caida
-# Wait until STATUS shows "Bound"
+# Option A: uv
+uv sync
+uv run jupyter lab nids-iyp.ipynb
 ```
-
----
-
-## Step 2 — Download the Dump File
-
-Save as `iyp-download-pod.yaml`:
-
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: iyp-download
-  namespace: esculate-caida
-spec:
-  containers:
-  - name: downloader
-    image: ubuntu
-    command: ["sleep", "7200"]
-    resources:
-      requests:
-        memory: "512Mi"
-        cpu: "500m"
-      limits:
-        memory: "1Gi"
-        cpu: "1000m"
-    volumeMounts:
-    - name: iyp-data
-      mountPath: /data
-  volumes:
-  - name: iyp-data
-    persistentVolumeClaim:
-      claimName: iyp-storage
-```
-
-Apply and exec in:
 
 ```bash
-kubectl apply -f iyp-download-pod.yaml -n esculate-caida
-
-# Wait for Running
-kubectl get pod iyp-download -n esculate-caida -w
-
-kubectl exec -it iyp-download -n esculate-caida -- bash
+# Option B: pip + venv
+python3 -m venv .venv
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+jupyter lab nids-iyp.ipynb
 ```
 
-Inside the pod:
+Before running any queries, set up `neo4j_credentials.env` — see [Datasets](Datasets.md#connecting). Ask your instructor how to reach the database: either your JupyterHub session runs inside the same NRP namespace as the IYP instance (connect directly), or you'll open a `kubectl port-forward` tunnel to it yourself and connect to `localhost` (see [Datasets](Datasets.md#connecting) for both connection strings).
 
-```bash
-# Verify PVC is mounted correctly (should show ~200GB filesystem)
-df -h /data
+### Directory Structure
 
-# Install awscli
-apt-get update && apt-get install -y --no-install-recommends python3-pip
-pip3 install awscli
-
-# Configure S3 credentials
-aws configure
-# Enter your access key and secret key, leave region and format blank
-
-# Test bucket access
-aws s3 ls s3://iyp-caida/ --endpoint-url https://s3-west.nrp-nautilus.io
-# Should show: PRE iyp/
-
-# Download the dump to the PVC
-mkdir -p /data/dumps
-aws s3 cp s3://iyp-caida/iyp/iyp-2024-07-22.dump /data/dumps/neo4j.dump \
-  --endpoint-url https://s3-west.nrp-nautilus.io
-
-# Verify download completed (~4.1GB)
-ls -lh /data/dumps/neo4j.dump
+```
+nids-iyp
+├- Introduction.md                          # Reading list and IYP data-model concepts
+├- Datasets.md                              # Node/relationship schema and access model
+├- Cypher.md                                # Cypher query-language guide
+├- Task.md                                  # Task checklist and instructions
+├- Task-1.md                                # Task 1 how-to guide
+├- Task-2.md                                # Task 2 how-to guide
+├- Task-3.md                                # Task 3 how-to guide
+├- nids-iyp.ipynb                       ⬅  # Complete / Commit / Push
+├- neo4j_credentials.env.example            # Credentials template (copy to neo4j_credentials.env)
+├- iyp_csv/                                 # Schema reference: labels, relationship types, properties
+├- requirements.txt                         # Dependencies (pip + venv)
+├- pyproject.toml / uv.lock                 # Dependencies (uv)
 ```
 
-Exit and delete the download pod:
+### Glossary
 
-```bash
-exit
-kubectl delete pod iyp-download -n esculate-caida
-```
+- **IYP (Internet Yellow Pages)**: A Neo4j graph database, maintained by the Internet Health Report (IHR) project, that unifies over 60 Internet-measurement datasets into one queryable graph of typed nodes and relationships.
+- **Neo4j**: The graph database management system IYP is built on.
+- **Cypher**: Neo4j's query language, used to describe and match patterns of nodes and relationships in the graph.
+- **Node**: A single entity in the graph — an `AS`, a `BGPPrefix`, a `HostName`, an `IXP`, etc. Every node has one or more **labels** naming its type.
+- **Relationship**: A typed, directed edge connecting two nodes, e.g. `ORIGINATE`, `RESOLVES_TO`, `MEMBER_OF`. Relationships carry their own properties, separately from the nodes they connect.
+- **Reference / provenance properties**: Every relationship in IYP records where the fact came from — `reference_org`, `reference_name`, `reference_time_fetch`, `reference_url_data`, etc. Because different datasets can disagree about the same fact, IYP stores each source's claim as its own relationship rather than overwriting a single property.
+- **AS (Autonomous System)**: A network under one administrative control, identified by an ASN; see `nids-asn-introduction` for a deeper introduction.
+- **BGP / Prefix / Origin**: The routing protocol ASes use to announce which IP prefixes they carry traffic for; the AS that announces a prefix is its *origin*. See `nids-bgp-control-plane`.
+- **RPKI / ROA**: Resource Public Key Infrastructure and its core object, the Route Origin Authorization — a cryptographically signed statement of which AS is authorized to originate a given prefix. See `nids-irr-rpki-whois`.
+- **IXP (Internet Exchange Point)**: A physical facility where multiple ASes interconnect and exchange traffic directly, rather than through transit.
+- **HostName / DomainName**: A fully-qualified domain name (`www.example.com`) is a `HostName`; a non-FQDN registrable name (`example.com`) is a `DomainName`. See `nids-dns-ecosystem`.
+- **Authoritative Name Server**: The DNS server responsible for answering queries for a given domain's zone.
+- **Ranking**: A node representing a specific popularity or importance ranking (e.g. CAIDA ASRank, Tranco, Chrome UX Report), linked to the ASes or domains it ranks via `RANK` relationships.
+- **Tag**: A node representing a classification applied to a resource (e.g. `"RPKI Invalid"`, `"Academic"`), linked via `CATEGORIZED` relationships.
 
----
-
-## Step 3 — Load the Dump and Run Neo4j
-
-Save as `iyp-neo4j-pod.yaml`:
-
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: iyp-neo4j
-  namespace: esculate-caida
-  labels:
-    k8s-app: iyp-neo4j
-spec:
-  initContainers:
-  - name: load-dump
-    image: neo4j/neo4j-admin:2025-community-debian
-    command:
-    - bash
-    - -c
-    - |
-      if [ -d /data/databases/neo4j ]; then
-        echo "Database already loaded, skipping."
-      else
-        echo "Loading dump..."
-        mkdir -p /data/databases /data/transactions
-        chown -R neo4j:neo4j /data/databases /data/transactions /data/dumps
-        su -s /bin/bash neo4j -c "neo4j-admin database load neo4j \
-          --from-path=/data/dumps \
-          --overwrite-destination=true \
-          --verbose"
-        echo "Done."
-      fi
-    resources:
-      requests:
-        memory: "8Gi"
-        cpu: "1000m"
-      limits:
-        memory: "16Gi"
-        cpu: "2000m"
-    volumeMounts:
-    - name: iyp-data
-      mountPath: /data
-  containers:
-  - name: neo4j
-    image: neo4j:2025-community
-    ports:
-    - containerPort: 7474
-    - containerPort: 7687
-    env:
-    - name: NEO4J_AUTH
-      value: "neo4j/password"
-    - name: NEO4J_server_directories_data
-      value: /data
-    - name: NEO4J_server_config_strict__validation_enabled
-      value: "false"
-    - name: NEO4J_dbms_security_procedures_unrestricted
-      value: "gds.*,apoc.*"
-    - name: NEO4J_dbms_connector_bolt_tls__level
-      value: "DISABLED"
-    - name: NEO4J_dbms_connector_bolt_listen__address
-      value: "0.0.0.0:7687"
-    - name: NEO4J_dbms_connector_http_listen__address
-      value: "0.0.0.0:7474"
-    - name: NEO4J_db_recovery_fail__on__missing__files
-      value: "false"
-    resources:
-      requests:
-        memory: "6Gi"
-        cpu: "1000m"
-      limits:
-        memory: "8Gi"
-        cpu: "2000m"
-    volumeMounts:
-    - name: iyp-data
-      mountPath: /data
-  volumes:
-  - name: iyp-data
-    persistentVolumeClaim:
-      claimName: iyp-storage
-```
-
-Apply and watch the logs:
-
-```bash
-kubectl apply -f iyp-neo4j-pod.yaml -n esculate-caida
-
-# Watch init container load the dump (~10-15 minutes)
-kubectl logs iyp-neo4j -n esculate-caida -c load-dump -f
-# Wait for: "Done: 88 files, 40.51GiB processed"
-
-# Then watch Neo4j start (~5 minutes)
-kubectl logs iyp-neo4j -n esculate-caida -c neo4j -f
-# Wait for: "Started."
-```
-
-> **Note:** On subsequent restarts the init container will print `Database already loaded, skipping.` and Neo4j will start immediately.
-
----
-
-## Step 4 — Verify Neo4j is Working
-
-Port-forward in a second terminal:
-
-```bash
-kubectl port-forward pod/iyp-neo4j 7474:7474 7687:7687 -n esculate-caida
-```
-
-Open http://localhost:7474 and login:
-
-- **Username:** `neo4j`
-- **Password:** `password`
-- **Connect URL:** `bolt://localhost:7687`
-
-Run a test query:
-
-```cypher
-MATCH (n) RETURN distinct labels(n), count(n) ORDER BY count(n) DESC
-```
-
-Should return a table of node types with millions of total nodes.
-
----
-
-## Step 5 — Expose Neo4j via Ingress
-
-Save as `iyp-neo4j-service.yaml`:
-
-```yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: iyp-neo4j-svc
-  namespace: esculate-caida
-spec:
-  selector:
-    k8s-app: iyp-neo4j
-  ports:
-  - name: http
-    port: 7474
-    targetPort: 7474
-  - name: bolt
-    port: 7687
-    targetPort: 7687
-  type: ClusterIP
-```
-
-Save as `iyp-neo4j-ingress.yaml`:
-
-```yaml
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: iyp-neo4j-ingress
-  namespace: esculate-caida
-spec:
-  ingressClassName: haproxy
-  rules:
-  - host: iyp-caida.nrp-nautilus.io
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: iyp-neo4j-svc
-            port:
-              number: 7474
-  tls:
-  - hosts:
-    - iyp-caida.nrp-nautilus.io
-```
-
-Apply:
-
-```bash
-kubectl apply -f iyp-neo4j-service.yaml -n esculate-caida
-kubectl apply -f iyp-neo4j-ingress.yaml -n esculate-caida
-```
-
-Neo4j browser UI will be available at https://iyp-caida.nrp-nautilus.io.
-
-> **Note:** Bolt (port 7687) cannot be exposed via NRP Ingress. Use `kubectl port-forward` for direct database connections.
-
----
-
-## Step 6 — Public Dump File Server (Optional)
-
-This serves the raw dump file for others to download at https://iyp-files.nrp-nautilus.io.
-
-> **Important:** The PVC is ReadWriteOnce — you cannot run `iyp-fileserver` and `iyp-neo4j` simultaneously. Delete one before starting the other.
-
-Save as `iyp-nginx-config.yaml`:
-
-```yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: iyp-nginx-config
-  namespace: esculate-caida
-data:
-  default.conf: |
-    server {
-      listen 80;
-      location / {
-        root /usr/share/nginx/html;
-        autoindex on;
-        autoindex_exact_size off;
-        autoindex_localtime on;
-      }
-    }
-```
-
-Save as `iyp-fileserver-pod.yaml`:
-
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: iyp-fileserver
-  namespace: esculate-caida
-  labels:
-    k8s-app: iyp-fileserver
-spec:
-  containers:
-  - name: nginx
-    image: nginx:alpine
-    ports:
-    - containerPort: 80
-    volumeMounts:
-    - name: iyp-data
-      mountPath: /usr/share/nginx/html
-      subPath: dumps
-    - name: nginx-config
-      mountPath: /etc/nginx/conf.d
-    resources:
-      requests:
-        memory: "128Mi"
-        cpu: "100m"
-      limits:
-        memory: "256Mi"
-        cpu: "250m"
-  volumes:
-  - name: iyp-data
-    persistentVolumeClaim:
-      claimName: iyp-storage
-  - name: nginx-config
-    configMap:
-      name: iyp-nginx-config
-```
-
-Save as `iyp-fileserver-service.yaml`:
-
-```yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: iyp-fileserver-svc
-  namespace: esculate-caida
-spec:
-  selector:
-    k8s-app: iyp-fileserver
-  ports:
-  - port: 80
-    protocol: TCP
-    targetPort: 80
-  type: ClusterIP
-```
-
-Save as `iyp-fileserver-ingress.yaml`:
-
-```yaml
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: iyp-fileserver-ingress
-  namespace: esculate-caida
-  annotations:
-    haproxy.org/response-set-header: |
-      Content-Disposition "attachment"
-spec:
-  ingressClassName: haproxy
-  rules:
-  - host: iyp-files.nrp-nautilus.io
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: iyp-fileserver-svc
-            port:
-              number: 80
-  tls:
-  - hosts:
-    - iyp-files.nrp-nautilus.io
-```
-
-Apply:
-
-```bash
-kubectl delete pod iyp-neo4j -n esculate-caida
-kubectl apply -f iyp-nginx-config.yaml -n esculate-caida
-kubectl apply -f iyp-fileserver-pod.yaml -n esculate-caida
-kubectl apply -f iyp-fileserver-service.yaml -n esculate-caida
-kubectl apply -f iyp-fileserver-ingress.yaml -n esculate-caida
-```
-
----
-
-## Restarting After a Pod Deadline Kill
-
-Since NRP kills pods after ~6 hours, here's how to restart Neo4j quickly:
-
-```bash
-# Check current state
-kubectl get pods -n esculate-caida
-
-# Reapply the pod (init container will skip the load)
-kubectl apply -f iyp-neo4j-pod.yaml -n esculate-caida
-
-# Watch startup (~5 minutes)
-kubectl logs iyp-neo4j -n esculate-caida -c neo4j -f
-
-# Port-forward once Started
-kubectl port-forward pod/iyp-neo4j 7474:7474 7687:7687 -n esculate-caida
-```
-
-> **Note:** After a restart, wait for the rate limit to clear before logging in if you see auth errors. Wait 5 minutes and try again.
-
----
-
-## Important Notes & Lessons Learned
-
-| Issue | Solution |
-|---|---|
-| PVC is ReadWriteOnce | Only one pod can mount at a time — delete current pod before starting a new one |
-| Pod deadline ~6 hours | Pods get killed but PVC data persists — just reapply the YAML |
-| apt packages lost on restart | Reinstall each time you exec into a fresh pod |
-| neo4j-admin OOM on load | Needs 8GB+ free RAM on node — request `memory: 16Gi` limit |
-| Version must match | Use `neo4j:2025-community` to match `neo4j/neo4j-admin:2025-community-debian` |
-| Neo4j data directory | Set `NEO4J_server_directories_data=/data` — Neo4j appends `databases/` internally |
-| Transaction logs missing | Add `NEO4J_db_recovery_fail__on__missing__files=false` — safe after a dump load |
-| Load must run as neo4j user | Use `su -s /bin/bash neo4j -c "..."` — running as root causes permission errors |
-| Auth rate limit | If locked out, wait 5 minutes before retrying login |
-| S3 endpoint | Use `s3-west.nrp-nautilus.io` |
-| awscli not in apt | Install via `pip3 install awscli` |
-| Mac SSL issues | Use curl/aws inside the pod, not from Mac |
-| Bolt not exposable via Ingress | NRP only supports HTTP ingress — use `kubectl port-forward` for Bolt |
+README ⮕ | [Introduction](Introduction.md) | [Datasets](Datasets.md) | [Cypher](Cypher.md) | [Tasks](Task.md) | [Task 1](Task-1.md) | [Task 2](Task-2.md) | [Task 3](Task-3.md) | [Notebook](nids-iyp.ipynb)

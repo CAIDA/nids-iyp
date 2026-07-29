@@ -1,0 +1,10 @@
+type,property,description
+(any),reference_org,Organization that published the source dataset
+(any),reference_name,Unique per-dataset identifier (e.g. caida.asrank, bgpkit.pfx2asn)
+(any),reference_time_fetch,When IYP fetched this fact
+(any),reference_time_modification,When the source last modified this fact
+(any),reference_url_data,URL to the raw source data
+(any),reference_url_info,URL to the source's own documentation
+RANK,rank,Numeric rank position within the linked Ranking
+PEERS_WITH,num_v4_pfxs,Number of IPv4 prefixes seen via this peering/session
+PEERS_WITH,num_v6_pfxs,Number of IPv6 prefixes seen via this peering/session

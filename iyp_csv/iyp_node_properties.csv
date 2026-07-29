@@ -1,0 +1,18 @@
+label,property,description
+AS,asn,Autonomous System Number
+BGPPrefix,prefix,CIDR prefix string
+BGPPrefix,af,Address family (4 or 6)
+RPKIPrefix,prefix,CIDR prefix string
+RPKIPrefix,af,Address family (4 or 6)
+IP,ip,IP address
+HostName,name,Fully-qualified domain name
+DomainName,name,Registrable domain name
+AuthoritativeNameServer,name,Nameserver hostname
+IXP,name,IXP name
+Name,name,Name string
+Ranking,name,Ranking system name (e.g. "CAIDA ASRank", "Tranco top 1M")
+Tag,label,Classification label text (e.g. "RPKI Invalid")
+Country,country_code,ISO 2-letter country code
+Country,alpha3,ISO 3-letter country code
+BGPCollector,project,Collector project (e.g. riperis, routeviews)
+BGPCollector,name,Collector session name

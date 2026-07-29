@@ -1,0 +1,12 @@
+type,connects,description,relationship_count
+ORIGINATE,BGPPrefix -- AS,Observed BGP origin,PENDING
+ROUTE_ORIGIN_AUTHORIZATION,RPKIPrefix -- AS,An RPKI ROA,PENDING
+PEERS_WITH,AS -- AS or AS -- BGPCollector,BGP peering or a route-collector monitoring session,PENDING
+MEMBER_OF,AS -> IXP,IXP membership,PENDING
+PART_OF,IP -> Prefix or HostName -> DomainName,Containment,PENDING
+RESOLVES_TO,HostName -> IP,DNS A/AAAA resolution,PENDING
+MANAGED_BY,DomainName -> AuthoritativeNameServer or AS -> Organization,Zone management / org ownership,PENDING
+NAME,any -> Name,Canonical naming; multi-source,PENDING
+RANK,any -> Ranking,Ranking assignment,PENDING
+CATEGORIZED,any -> Tag,Classification / tagging,PENDING
+COUNTRY,any -> Country,Geolocation or registration country (meaning depends on source),PENDING

@@ -1,0 +1,12 @@
+[project]
+name = "nids-iyp"
+version = "0.1.0"
+description = "CAIDA NIDS Internet Yellow Pages (IYP) teaching module"
+requires-python = ">=3.9"
+dependencies = [
+    "jupyterlab",
+    "neo4j",
+    "pandas",
+    "matplotlib",
+    "python-dotenv",
+]
