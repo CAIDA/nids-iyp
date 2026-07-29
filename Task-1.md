@@ -2,6 +2,8 @@
 
 # Task 1: The AS Ecosystem — How-To Guide
 
+**Builds on:** [nids-asn-introduction](https://github.com/CAIDA/nids-asn-introduction)
+
 ## Canonical Names and CAIDA ASRank
 
 An AS's name isn't a single property in IYP — it's a separate `Name` node, reached through a `NAME` relationship, and different sources can (and do) report different names for the same AS (see [Introduction](Introduction.md#nodes-relationships-and-provenance)). To get one merged name back, `OPTIONAL MATCH` each source individually and `coalesce()` them:
@@ -71,7 +73,7 @@ ORDER BY num_peer_ases DESC
 Ground each answer in what your own queries actually return, not in the example structure above:
 
 - **Q1.a** — Do PeeringDB, BGP.Tools, and RIPE NCC agree on each AS's name? What does agreement or disagreement tell you about why IYP models `NAME` as multiple relationships instead of a single property?
-- **Q1.b** — How does each of the three ASes' IXP membership count compare to the global top 10? Is IXP membership something all large networks do, or does it vary by the kind of network (transit ISP vs. content provider vs. national gateway) discussed in `nids-asn-introduction`?
+- **Q1.b** — How does each of the three ASes' IXP membership count compare to the global top 10? Is IXP membership something all large networks do, or does it vary by the kind of network (transit ISP vs. content provider vs. national gateway) discussed in [`nids-asn-introduction`](https://github.com/CAIDA/nids-asn-introduction)?
 - **Q1.c** — Do ASRank, peering degree, and IXP membership move together for these three ASes, or does one stand out from the others? What does that tell you about what CAIDA ASRank is actually measuring?
 
 [README](README.md) | [Introduction](Introduction.md) | [Datasets](Datasets.md) | [Cypher](Cypher.md) | [Tasks](Task.md) | Task 1 ⮕ | [Task 2](Task-2.md) | [Task 3](Task-3.md) | [Notebook](nids-iyp.ipynb)

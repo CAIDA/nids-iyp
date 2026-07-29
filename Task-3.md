@@ -2,6 +2,8 @@
 
 # Task 3: RPKI-Authorized vs. BGP-Observed Origins — How-To Guide
 
+**Builds on:** [nids-irr-rpki-whois](https://github.com/CAIDA/nids-irr-rpki-whois)
+
 ## ROA Coverage for a Single AS
 
 An RPKI ROA is a `ROUTE_ORIGIN_AUTHORIZATION` relationship between an `AS` and an `RPKIPrefix`; an observed BGP announcement is the same `ORIGINATE` relationship you used in Task 2, but pointing at a `BGPPrefix` instead. A ROA with no matching observed announcement is a prefix that exists in one graph pattern but not the other — expressed directly as a negative pattern with `WHERE NOT`:
@@ -42,6 +44,6 @@ Cross-reference the resulting list against AS3356, AS2906, AS4837 (Task 1), and 
 
 - **Q3.a** — How many of AS3356's ROAs have no matching observed `BGPPrefix`? Looking at the actual prefixes, what's a plausible explanation for each (a prefix that's authorized but simply not announced right now vs. one where the announcement might use a different, unlisted prefix length)?
 - **Q3.b** — Do any of the four running-example ASes appear in the top-20 RPKI-invalid list? If not, what does that suggest about them? If so, does it look like a genuine anomaly or something explainable?
-- **Q3.c** — An `"RPKI Invalid"` tag means the ROA and the observed announcement disagree — it does not by itself mean malicious hijacking. What are at least two other explanations for the same tag (e.g. non-adoption of RPKI by a legitimate deaggregating announcer, a stale or missing ROA, a routing leak)? How does this graph-pattern comparison relate to the manual IRR/RPKI/BGP cross-comparison in `nids-irr-rpki-whois` — what does the graph give you "for free" that you had to build there, and what nuance (if any) does the graph pattern flatten away?
+- **Q3.c** — An `"RPKI Invalid"` tag means the ROA and the observed announcement disagree — it does not by itself mean malicious hijacking. What are at least two other explanations for the same tag (e.g. non-adoption of RPKI by a legitimate deaggregating announcer, a stale or missing ROA, a routing leak)? How does this graph-pattern comparison relate to the manual IRR/RPKI/BGP cross-comparison in [`nids-irr-rpki-whois`](https://github.com/CAIDA/nids-irr-rpki-whois) — what does the graph give you "for free" that you had to build there, and what nuance (if any) does the graph pattern flatten away?
 
 [README](README.md) | [Introduction](Introduction.md) | [Datasets](Datasets.md) | [Cypher](Cypher.md) | [Tasks](Task.md) | [Task 1](Task-1.md) | [Task 2](Task-2.md) | Task 3 ⮕ | [Notebook](nids-iyp.ipynb)

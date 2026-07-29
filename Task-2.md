@@ -2,6 +2,8 @@
 
 # Task 2: Bridging BGP and DNS in One Traversal — How-To Guide
 
+**Builds on:** [nids-asn-introduction](https://github.com/CAIDA/nids-asn-introduction), [nids-dns-ecosystem](https://github.com/caida/nids-dns-ecosystem)
+
 ## AS Prefixes and Hosted Domains
 
 To find every hostname resolving into an AS's announced address space, chain three relationship types in one pattern: BGP origin (`ORIGINATE`), prefix containment (`PART_OF`), and DNS resolution (`RESOLVES_TO`). Use `OPTIONAL MATCH` for the resolution half so a prefix with no resolving hostnames still appears in the result (see [Cypher §3.4](Cypher.md#34-optional-match-for-possibly-missing-relationships)):
@@ -43,8 +45,8 @@ ORDER BY nb_domains DESC
 
 ## What Your Write-Up Should Address
 
-- **Q2.a** — How many distinct hostnames resolve into AS2497's vs. AS3356's announced prefixes? Does the gap match what you'd expect from a content/hosting network versus a pure transit backbone (see `nids-asn-introduction`'s discussion of AS business models)?
+- **Q2.a** — How many distinct hostnames resolve into AS2497's vs. AS3356's announced prefixes? Does the gap match what you'd expect from a content/hosting network versus a pure transit backbone (see [`nids-asn-introduction`](https://github.com/CAIDA/nids-asn-introduction)'s discussion of AS business models)?
 - **Q2.b** — Which nameservers manage the most domains inside AS2501's address space? Is domain hosting concentrated in a handful of nameservers, or spread evenly?
-- **Q2.c** — This is the same kind of question `nids-dns-ecosystem` answers by loading OpenINTEL DNS measurements and a separately-obtained BGP prefix-to-AS mapping, then joining them in Spark across two independently-fetched datasets. What did chaining `ORIGINATE` → `PART_OF` → `RESOLVES_TO` in one Cypher query do in a single step that took multiple stages there? Is there anything the manual approach gives you that the graph traversal doesn't (e.g. control over which snapshot date, or access to raw DNS response fields not modeled in the graph)?
+- **Q2.c** — This is the same kind of question [`nids-dns-ecosystem`](https://github.com/caida/nids-dns-ecosystem) answers by loading OpenINTEL DNS measurements and a separately-obtained BGP prefix-to-AS mapping, then joining them in Spark across two independently-fetched datasets. What did chaining `ORIGINATE` → `PART_OF` → `RESOLVES_TO` in one Cypher query do in a single step that took multiple stages there? Is there anything the manual approach gives you that the graph traversal doesn't (e.g. control over which snapshot date, or access to raw DNS response fields not modeled in the graph)?
 
 [README](README.md) | [Introduction](Introduction.md) | [Datasets](Datasets.md) | [Cypher](Cypher.md) | [Tasks](Task.md) | [Task 1](Task-1.md) | Task 2 ⮕ | [Task 3](Task-3.md) | [Notebook](nids-iyp.ipynb)

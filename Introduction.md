@@ -1,5 +1,13 @@
 [README](README.md) | Introduction ⮕ | [Datasets](Datasets.md) | [Cypher](Cypher.md) | [Tasks](Task.md) | [Task 1](Task-1.md) | [Task 2](Task-2.md) | [Task 3](Task-3.md) | [Notebook](nids-iyp.ipynb)
 
+### Prerequisite NIDS Assignments
+
+- [How the Internet assigns and uses Autonomous Systems (ASes)](https://github.com/CAIDA/nids-asn-introduction)
+- [Understanding the BGP Control Plane](https://github.com/CAIDA/nids-bgp-control-plane)
+- [Exploring Internet Topology with CAIDA's ITDK](https://github.com/CAIDA/nids-itdk)
+- [Regional Internet Registry, IRR, and RPKI](https://github.com/CAIDA/nids-irr-rpki-whois)
+- [Understanding the DNS Ecosystem](https://github.com/caida/nids-dns-ecosystem)
+
 ## What Is the Internet Yellow Pages?
 
 The [Internet Yellow Pages (IYP)](https://tutorial.iyp.ihr.live/) is a graph database, built and maintained by the [Internet Health Report (IHR)](https://ihr.live) project, that aggregates over 60 Internet-measurement datasets — BGP routing tables, RPKI ROAs, IXP membership records, DNS measurements, AS rankings, geolocation, and more — into one queryable graph. It is built on [Neo4j](https://neo4j.com), a graph database management system, and queried with **Cypher**, Neo4j's pattern-matching query language.
@@ -14,7 +22,7 @@ IYP instead models each of these datasets as nodes and typed relationships in a 
 
 Under the hood, every node and relationship in IYP is **typed**: a node carries one or more **labels** (`AS`, `BGPPrefix`, `HostName`, `IXP`, ...) and a relationship carries exactly one **type** (`ORIGINATE`, `RESOLVES_TO`, `MEMBER_OF`, ...). The full label and relationship-type reference is in [Datasets](Datasets.md).
 
-The one modeling choice worth understanding before you write a single query: **IYP does not store one "true" value per fact — it stores every source's claim as its own relationship.** An AS's name, for example, is not a property on the `AS` node. It is a separate `Name` node, reached via a `NAME` relationship, and if PeeringDB, BGP.tools, and RIPE NCC all report a name for the same AS, that AS has *three* `NAME` relationships, each carrying a `reference_org` property identifying which source it came from. This is because these sources genuinely disagree sometimes, and flattening them into a single property would silently hide that disagreement. Every relationship in IYP carries this same reference/provenance metadata: `reference_org`, `reference_name` (a unique per-dataset identifier, e.g. `caida.asrank`), `reference_time_fetch`, `reference_time_modification`, `reference_url_data`, and `reference_url_info`. You will use `reference_name`/`reference_org` filters directly in Task 1 to pick out one source's claim among several.
+The one modeling choice worth understanding before you write a single query: **IYP does not store one "true" value per fact — it stores every source's claim as its own relationship.** An AS's name, for example, is not a property on the `AS` node. It is a separate `Name` node, reached via a `NAME` relationship, and if PeeringDB, BGP.tools, and RIPE NCC all report a name for the same AS, that AS has _three_ `NAME` relationships, each carrying a `reference_org` property identifying which source it came from. This is because these sources genuinely disagree sometimes, and flattening them into a single property would silently hide that disagreement. Every relationship in IYP carries this same reference/provenance metadata: `reference_org`, `reference_name` (a unique per-dataset identifier, e.g. `caida.asrank`), `reference_time_fetch`, `reference_time_modification`, `reference_url_data`, and `reference_url_info`. You will use `reference_name`/`reference_org` filters directly in Task 1 to pick out one source's claim among several.
 
 ### Task 1 Background: The AS Ecosystem
 
