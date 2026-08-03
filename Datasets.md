@@ -9,7 +9,8 @@ This module uses a self-hosted **Neo4j** instance loaded from a pinned IYP dump,
 | Label | Represents | Key properties |
 | --- | --- | --- |
 | `AS` | An Autonomous System | `asn` |
-| `BGPPrefix` | An IP prefix observed announced in BGP | `prefix`, `af` (4 or 6) |
+| `Prefix` | An IP prefix — a supertype label carried by *every* prefix node, alongside the more specific label below | `prefix`, `af` (4 or 6) |
+| `BGPPrefix` | An IP prefix observed announced in BGP | `prefix`, `af` |
 | `RPKIPrefix` | An IP prefix covered by an RPKI ROA | `prefix`, `af` |
 | `IP` | A single IP address | `ip` |
 | `HostName` | A fully-qualified domain name | `name` |

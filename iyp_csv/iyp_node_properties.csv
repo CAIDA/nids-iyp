@@ -1,5 +1,9 @@
 label,property,description
 AS,asn,Autonomous System Number
+Prefix,prefix,CIDR prefix string
+Prefix,af,Address family (4 or 6)
+Prefix,prefixlen,Prefix length in bits
+Prefix,network,Network address of the prefix
 BGPPrefix,prefix,CIDR prefix string
 BGPPrefix,af,Address family (4 or 6)
 RPKIPrefix,prefix,CIDR prefix string
@@ -14,5 +18,6 @@ Ranking,name,Ranking system name (e.g. "CAIDA ASRank", "Tranco top 1M")
 Tag,label,Classification label text (e.g. "RPKI Invalid")
 Country,country_code,ISO 2-letter country code
 Country,alpha3,ISO 3-letter country code
+Organization,name,Organization name
 BGPCollector,project,Collector project (e.g. riperis, routeviews)
 BGPCollector,name,Collector session name
