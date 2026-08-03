@@ -60,7 +60,7 @@ nids-iyp
 
 ### Glossary
 
-- **IYP (Internet Yellow Pages)**: A Neo4j graph database, maintained by the Internet Health Report (IHR) project, that unifies over 60 Internet-measurement datasets into one queryable graph of typed nodes and relationships.
+- **IYP (Internet Yellow Pages)**: A Neo4j graph database, maintained by the Internet Health Report (IHR) project, that unifies over 80 Internet-measurement datasets into one queryable graph of typed nodes and relationships.
 - **Neo4j**: The graph database management system IYP is built on.
 - **Cypher**: Neo4j's query language, used to describe and match patterns of nodes and relationships in the graph.
 - **Node**: A single entity in the graph — an `AS`, a `BGPPrefix`, a `HostName`, an `IXP`, etc. Every node has one or more **labels** naming its type.

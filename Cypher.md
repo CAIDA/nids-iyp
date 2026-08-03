@@ -66,7 +66,7 @@ Relationships in Cypher patterns are undirected by default (`-[:TYPE]-`); add an
 
 ### 3.3 Multi-hop traversal (chaining relationship types)
 
-This is the technique that makes IYP different from the siloed datasets in other modules: chain several relationship types in one `MATCH` to walk from one kind of node to a completely different kind, in a single query. This finds every hostname that resolves into an AS's announced address space — BGP origin, prefix containment, and DNS resolution, joined in one pattern:
+This is the technique that makes IYP different from the siloed datasets in other modules: chain several relationship types in one `MATCH` to walk from one kind of node to a completely different kind, in a single query. This finds the hostnames IYP knows resolve into an AS's announced address space — BGP origin, prefix containment, and DNS resolution, joined in one pattern:
 
 ```cypher
 MATCH (a:AS {asn: 2501})-[:ORIGINATE]-(pfx:BGPPrefix)-[:PART_OF]-(:IP)-[:RESOLVES_TO]-(h:HostName)
@@ -74,6 +74,8 @@ RETURN pfx.prefix, collect(DISTINCT h.name)
 ```
 
 Read it left to right: start at one `AS`, walk to the `BGPPrefix` nodes it originates, walk to the `IP` addresses contained in those prefixes, walk to the `HostName` nodes that resolve to those IPs. Compare this to `nids-dns-ecosystem`, where the same "which domains does this AS's address space host" question requires separately loading a BGP prefix-to-AS table and a DNS resolution table, then joining them yourself.
+
+Note the wording: *the hostnames IYP knows about*, not every hostname that exists. IYP populates `RESOLVES_TO` by resolving domain-popularity lists, so this pattern sees names that appear on one of those lists and nothing else. [Task 2](Task-2.md) makes that limit explicit by adding a `RANK` hop, which turns an unstated caveat into a stated filter.
 
 ### 3.4 `OPTIONAL MATCH` for possibly-missing relationships
 

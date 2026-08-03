@@ -34,7 +34,7 @@ An Autonomous System doesn't exist in isolation — its position in the Internet
 
 ### Task 3 Background: RPKI-Authorized vs. BGP-Observed Origins
 
-`nids-irr-rpki-whois` has you compare IRR route objects, RPKI ROAs, and observed BGP announcements by hand to see where they agree, disagree, or go missing. IYP models the RPKI side of that comparison as a `ROUTE_ORIGIN_AUTHORIZATION` relationship between an `AS` and an `RPKIPrefix` (the ROA), and the BGP side as the same `ORIGINATE` relationship used in Task 2, but pointing at a `BGPPrefix` instead. A prefix that has a ROA but no matching observed `BGPPrefix`, or a `BGPPrefix` tagged `"RPKI Invalid"` via a `CATEGORIZED` relationship to a `Tag` node, are both direct graph patterns — no separate ROA-validator tool required.
+`nids-irr-rpki-whois` has you compare IRR route objects, RPKI ROAs, and observed BGP announcements by hand to see where they agree, disagree, or go missing. IYP models the RPKI side of that comparison as a `ROUTE_ORIGIN_AUTHORIZATION` relationship between an `AS` and an `RPKIPrefix` (the ROA), and the BGP side as the same `ORIGINATE` relationship used in Task 2, but pointing at a `BGPPrefix` instead. A prefix that has a ROA but no *exact* matching observed `BGPPrefix`, or a `BGPPrefix` tagged `"RPKI Invalid"` via a `CATEGORIZED` relationship to a `Tag` node, are both direct graph patterns — no separate ROA-validator tool required.
 
 ### Reading
 

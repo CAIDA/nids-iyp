@@ -28,7 +28,7 @@ This module uses a self-hosted **Neo4j** instance loaded from a pinned IYP dump,
 | Type | Connects | Key properties | Notes |
 | --- | --- | --- | --- |
 | `ORIGINATE` | `AS` → `BGPPrefix` | `reference_name` (e.g. `bgpkit.pfx2asn`) | Observed BGP origin |
-| `ROUTE_ORIGIN_AUTHORIZATION` | `RPKIPrefix` — `AS` | `reference_name` | An RPKI ROA |
+| `ROUTE_ORIGIN_AUTHORIZATION` | `AS` → `RPKIPrefix` | `reference_name` | An RPKI ROA |
 | `PEERS_WITH` | `AS` — `AS`, or `AS` — `BGPCollector` | `num_v4_pfxs`, `num_v6_pfxs` | BGP peering, or a monitoring session |
 | `MEMBER_OF` | `AS` → `IXP` | `reference_org` | IXP membership |
 | `PART_OF` | `IP` → `Prefix`; `HostName` → `DomainName` | — | Containment |

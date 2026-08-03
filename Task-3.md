@@ -13,7 +13,7 @@ An RPKI ROA is a `ROUTE_ORIGIN_AUTHORIZATION` relationship between an `AS` and a
 MATCH (roa_as:AS {asn: 3356})-[:ROUTE_ORIGIN_AUTHORIZATION]-(rpfx:RPKIPrefix)
 
 // step 2: keep only the ones with NO exact matching observed BGPPrefix -- i.e., no
-// BGPPrefix node exists with the eactly same prefix string, contained in this RPKIPrefix
+// BGPPrefix node exists with the exactly same prefix string, contained in this RPKIPrefix
 WHERE NOT (rpfx)-[:PART_OF]-(:BGPPrefix {prefix: rpfx.prefix})
 
 RETURN rpfx.prefix
