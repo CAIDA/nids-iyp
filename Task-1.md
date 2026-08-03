@@ -20,7 +20,7 @@ OPTIONAL MATCH (a)-[r:RANK {reference_name: 'caida.asrank'}]->(:Ranking)
 // drop the whole row -- each is filtered to a single reference_org/reference_name
 // so we don't accidentally average together sources that disagree
 OPTIONAL MATCH (a)-[:NAME {reference_org: 'PeeringDB'}]->(n1:Name)
-OPTIONAL MATCH (a)-[:NAME {reference_org: 'BGP.Tools'}]->(n2:Name)
+OPTIONAL MATCH (a)-[:NAME {reference_org: 'bgp.tools'}]->(n2:Name)
 OPTIONAL MATCH (a)-[:NAME {reference_name: 'ripe.as_names'}]->(n3:Name)
 
 // step 4: coalesce picks the first non-null -- the "canonical" name -- but we

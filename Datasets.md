@@ -2,7 +2,7 @@
 
 ## Database
 
-This module uses a self-hosted **Neo4j** instance loaded from a pinned IYP dump, running on CAIDA's National Research Platform (NRP) namespace. Every node has one or more **labels** naming its type; every relationship has exactly one **type** and carries reference/provenance properties describing which dataset it came from (see [Introduction](Introduction.md#nodes-relationships-and-provenance)). The full schema (60+ datasets) is much larger than what's below — this page lists only the labels and relationship types the three tasks actually use. The complete reference lives at [github.com/InternetHealthReport/internet-yellow-pages/documentation](https://github.com/InternetHealthReport/internet-yellow-pages/tree/main/documentation); the schema snapshot this course pins to is regenerated into [`iyp_csv/`](iyp_csv/iyp_data_dictionary.md).
+This module uses a self-hosted **Neo4j** instance loaded from a pinned IYP dump, running on CAIDA's National Research Platform (NRP) namespace. Every node has one or more **labels** naming its type; every relationship has exactly one **type** and carries reference/provenance properties describing which dataset it came from (see [Introduction](Introduction.md#nodes-relationships-and-provenance)). The full schema (80+ datasets) is much larger than what's below — this page lists only the labels and relationship types the three tasks actually use. The complete reference lives at [github.com/InternetHealthReport/internet-yellow-pages/documentation](https://github.com/InternetHealthReport/internet-yellow-pages/tree/main/documentation); the schema snapshot this course pins to is regenerated into [`iyp_csv/`](iyp_csv/iyp_data_dictionary.md).
 
 #### Node Labels
 
@@ -20,14 +20,14 @@ This module uses a self-hosted **Neo4j** instance loaded from a pinned IYP dump,
 | `Ranking` | A specific ranking system (e.g. CAIDA ASRank, Tranco) | `name` |
 | `Tag` | A classification label applied to a resource | `label` |
 | `Country` | A country | `country_code`, `alpha3` |
-| `Organization` | An organization that operates one or more ASes | — (reached via `Name`) |
+| `Organization` | An organization that operates one or more ASes | `name` |
 | `BGPCollector` | A route collector (e.g. a RIPE RIS or RouteViews session) | `project`, `name` |
 
 #### Relationship Types
 
 | Type | Connects | Key properties | Notes |
 | --- | --- | --- | --- |
-| `ORIGINATE` | `BGPPrefix` — `AS` | `reference_name` (e.g. `bgpkit.pfx2asn`) | Observed BGP origin |
+| `ORIGINATE` | `AS` → `BGPPrefix` | `reference_name` (e.g. `bgpkit.pfx2asn`) | Observed BGP origin |
 | `ROUTE_ORIGIN_AUTHORIZATION` | `RPKIPrefix` — `AS` | `reference_name` | An RPKI ROA |
 | `PEERS_WITH` | `AS` — `AS`, or `AS` — `BGPCollector` | `num_v4_pfxs`, `num_v6_pfxs` | BGP peering, or a monitoring session |
 | `MEMBER_OF` | `AS` → `IXP` | `reference_org` | IXP membership |
@@ -43,9 +43,9 @@ Every relationship above also carries `reference_org`, `reference_time_fetch`, `
 
 ### Writing Efficient Queries
 
-The full graph is tens of millions of nodes across 60+ datasets, so query shape matters just as much as it would against a large SQL table:
+The full graph is tens of millions of nodes across 80+ datasets, so query shape matters just as much as it would against a large SQL table:
 
-- **Start from an indexed property lookup, not a label scan.** `MATCH (a:AS {asn: 2497})` uses Neo4j's index on `AS.asn`; `MATCH (a:AS) WHERE a.asn = 2497` is logically identical but push the filter into the pattern whenever you can — it reads the same to Neo4j's planner, but the `{prop: value}` form is easiest to get right by habit.
+- **Start from an indexed property lookup, not a label scan.** For example, `MATCH (a:AS {asn: 2497})` or `MATCH (a:AS) WHERE a.asn = 2497` uses Neo4j's index on `AS.asn`.
 - **Filter by `reference_name`/`reference_org` before aggregating**, whenever more than one source can populate the same relationship type (e.g. `NAME`, `RANK`, `COUNTRY`). Aggregating across sources that disagree silently mixes incompatible claims into one number.
 - **Avoid unbounded variable-length paths** (`-[*]-` with no upper bound) — on a graph this size they can match combinatorially many paths. If you need multi-hop traversal, chain explicit relationship types (as the tasks do) rather than a wildcard.
 - **Use `OPTIONAL MATCH`** when a relationship might not exist for every row in your result — a plain `MATCH` silently drops rows with no match at all, which can look like "zero results" when the real answer is "some rows have no name from this source."

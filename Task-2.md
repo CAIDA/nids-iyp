@@ -4,18 +4,18 @@
 
 **Builds on:** [nids-asn-introduction](https://github.com/CAIDA/nids-asn-introduction), [nids-dns-ecosystem](https://github.com/caida/nids-dns-ecosystem)
 
-## AS Prefixes and Hosted Domains
+## AS Prefixes and Popular Domains
 
-To find every hostname resolving into an AS's announced address space, chain three relationship types in one pattern: BGP origin (`ORIGINATE`), prefix containment (`PART_OF`), and DNS resolution (`RESOLVES_TO`). Use `OPTIONAL MATCH` for the resolution half so a prefix with no resolving hostnames still appears in the result (see [Cypher §3.4](Cypher.md#34-optional-match-for-possibly-missing-relationships)):
+To find every ranked hostname resolving into an AS's announced address space, chain three relationship types in one pattern: BGP origin (`ORIGINATE`), prefix containment (`PART_OF`), and DNS resolution (`RESOLVES_TO`). Use `OPTIONAL MATCH` for the resolution half so a prefix with no resolving hostnames still appears in the result (see [Cypher §3.4](Cypher.md#34-optional-match-for-possibly-missing-relationships)), and chain it to a `Ranking` with the `RANK` relationship to select only ranked/popular hostnames:
 
 ```cypher
 // step 1: every BGPPrefix this AS originates
 MATCH (a:AS {asn: $asn})-[:ORIGINATE]-(pfx:BGPPrefix)
 
-// step 2 (OPTIONAL): every hostname resolving into an IP inside that prefix.
+// step 2 (OPTIONAL): every ranked hostname resolving into an IP inside that prefix.
 // OPTIONAL so prefixes with zero resolving hostnames still come back, instead
 // of silently disappearing from the result
-OPTIONAL MATCH (pfx)-[:PART_OF]-(:IP)-[:RESOLVES_TO]-(h:HostName)
+OPTIONAL MATCH (pfx)-[:PART_OF]-(:IP)-[:RESOLVES_TO]-(h:HostName)-[:RANK]-(:Ranking)
 
 RETURN a.asn AS asn, count(DISTINCT h) AS num_hostnames, count(DISTINCT pfx) AS num_prefixes
 ```
@@ -45,7 +45,7 @@ ORDER BY nb_domains DESC
 
 ## What Your Write-Up Should Address
 
-- **Q2.a** — How many distinct hostnames resolve into AS2497's vs. AS3356's announced prefixes? Does the gap match what you'd expect from a content/hosting network versus a pure transit backbone (see [`nids-asn-introduction`](https://github.com/CAIDA/nids-asn-introduction)'s discussion of AS business models)?
+- **Q2.a** — How many distinct ranked hostnames resolve into AS2497's vs. AS3356's announced prefixes? Does the gap match what you'd expect from a content/hosting network versus a pure transit backbone (see [`nids-asn-introduction`](https://github.com/CAIDA/nids-asn-introduction)'s discussion of AS business models)?
 - **Q2.b** — Which nameservers manage the most domains inside AS2501's address space? Is domain hosting concentrated in a handful of nameservers, or spread evenly?
 - **Q2.c** — This is the same kind of question [`nids-dns-ecosystem`](https://github.com/caida/nids-dns-ecosystem) answers by loading OpenINTEL DNS measurements and a separately-obtained BGP prefix-to-AS mapping, then joining them in Spark across two independently-fetched datasets. What did chaining `ORIGINATE` → `PART_OF` → `RESOLVES_TO` in one Cypher query do in a single step that took multiple stages there? Is there anything the manual approach gives you that the graph traversal doesn't (e.g. control over which snapshot date, or access to raw DNS response fields not modeled in the graph)?
 

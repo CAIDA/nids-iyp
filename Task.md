@@ -43,7 +43,7 @@ Using three running-example autonomous systems — **Level3/Lumen (AS3356)**, **
 
 Using **IIJ (AS2497)** and **AS2501** as the primary examples — the same two ASes IYP's own tutorial uses for this kind of query — walk from an AS's announced BGP address space to the domain names hosted inside it, in a single Cypher pattern. Compare against **Level3/Lumen (AS3356)**, a pure transit backbone, to see what a network with little hosted content looks like by the same measure.
 
-- [ ] **Q2.a**: For AS2497 and AS3356, how many distinct hostnames resolve into each AS's announced prefixes? What does the difference tell you about what kind of network each one is?
+- [ ] **Q2.a**: For AS2497 and AS3356, how many distinct popular hostnames resolve into each AS's announced prefixes? What does the difference tell you about what kind of network each one is?
 - [ ] **Q2.b**: For AS2501, which authoritative nameservers manage the most domains hosted in its address space? Produce a table of nameserver → domain count.
 - [ ] **Q2.c**: This traversal joins BGP origin, prefix containment, and DNS resolution in one query. In [`nids-dns-ecosystem`](https://github.com/caida/nids-dns-ecosystem), the same kind of join required loading OpenINTEL DNS data and a separate BGP prefix-to-AS mapping, then joining them yourself in Spark. What did the graph traversal do in one step that took multiple stages there? What did you lose, if anything, by not doing it yourself?
 

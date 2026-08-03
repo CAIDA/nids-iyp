@@ -10,7 +10,7 @@
 
 ## What Is the Internet Yellow Pages?
 
-The [Internet Yellow Pages (IYP)](https://tutorial.iyp.ihr.live/) is a graph database, built and maintained by the [Internet Health Report (IHR)](https://ihr.live) project, that aggregates over 60 Internet-measurement datasets — BGP routing tables, RPKI ROAs, IXP membership records, DNS measurements, AS rankings, geolocation, and more — into one queryable graph. It is built on [Neo4j](https://neo4j.com), a graph database management system, and queried with **Cypher**, Neo4j's pattern-matching query language.
+The [Internet Yellow Pages (IYP)](https://iyp.iijlab.net/) is a graph database, built and maintained by the [Internet Health Report (IHR)](https://ihr.live) project, that aggregates over 80 Internet-measurement datasets — BGP routing tables, RPKI ROAs, IXP membership records, DNS measurements, AS rankings, geolocation, and more — into one queryable graph. It is built on [Neo4j](https://neo4j.com), a graph database management system, and queried with **Cypher**, Neo4j's pattern-matching query language.
 
 ### Why a Graph, and Not a Table?
 
@@ -30,7 +30,7 @@ An Autonomous System doesn't exist in isolation — its position in the Internet
 
 ### Task 2 Background: Bridging BGP and DNS
 
-`nids-dns-ecosystem` answers "who hosts this domain" by loading OpenINTEL DNS measurements and joining them, in Spark, against a separately-obtained BGP prefix-to-AS mapping. IYP represents both halves of that join natively: an `AS` node connects to the `BGPPrefix` nodes it originates via `ORIGINATE`, a `Prefix` contains the `IP` addresses within it via `PART_OF`, and an `IP` connects to the `HostName` nodes that resolve to it via `RESOLVES_TO`. Chaining these three relationship types in one `MATCH` walks from an AS's announced address space all the way to the domain names hosted inside it — the same question, answered as one graph pattern instead of a multi-stage join across two independently-fetched datasets.
+`nids-dns-ecosystem` answers "who hosts this domain" by loading OpenINTEL DNS measurements and joining them, in Spark, against a separately-obtained BGP prefix-to-AS mapping. IYP represents both halves of that join natively: an `AS` node connects to the `BGPPrefix` nodes it originates via `ORIGINATE`, a `BGPPrefix` contains the `IP` addresses within it via `PART_OF`, and an `IP` connects to the `HostName` nodes that resolve to it via `RESOLVES_TO`. Chaining these three relationship types in one `MATCH` walks from an AS's announced address space all the way to the domain names hosted inside it — the same question, answered as one graph pattern instead of a multi-stage join across two independently-fetched datasets.
 
 ### Task 3 Background: RPKI-Authorized vs. BGP-Observed Origins
 
