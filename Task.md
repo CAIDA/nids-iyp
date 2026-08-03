@@ -31,7 +31,7 @@ Complete the tasks below in order. All three tasks are completed inside [nids-iy
 
 **Builds on:** [nids-asn-introduction](https://github.com/CAIDA/nids-asn-introduction)
 
-Using three running-example autonomous systems — **Level3/Lumen (AS3356)**, **Netflix (AS2906)**, and **China Unicom (AS4837)** — explore how IYP represents an AS's position in the Internet: what it's called (and whether sources agree), how it ranks, which IXPs it belongs to, and how many other ASes it peers with directly.
+Using three running-example autonomous systems — **Zayo (AS6461)**, **Netflix (AS2906)**, and **China Unicom (AS4837)** — explore how IYP represents an AS's position in the Internet: what it's called (and whether sources agree), how it ranks, which IXPs it belongs to, and how many other ASes it peers with directly.
 
 - [ ] **Q1.a**: For each of the three ASes, resolve a canonical name across multiple `NAME` sources and look up its CAIDA ASRank. Do the sources agree on the name? Report both the merged name and each individual source's claim.
 - [ ] **Q1.b**: Which 10 IXPs have the most AS members globally? Separately, how many IXPs does each of the three ASes belong to?
@@ -41,9 +41,9 @@ Using three running-example autonomous systems — **Level3/Lumen (AS3356)**, **
 
 **Builds on:** [nids-asn-introduction](https://github.com/CAIDA/nids-asn-introduction), [nids-dns-ecosystem](https://github.com/caida/nids-dns-ecosystem)
 
-Using **IIJ (AS2497)** and **AS2501** as the primary examples — the same two ASes IYP's own tutorial uses for this kind of query — walk from an AS's announced BGP address space to the domain names hosted inside it, in a single Cypher pattern. Compare against **Level3/Lumen (AS3356)**, a pure transit backbone, to see what a network with little hosted content looks like by the same measure.
+Using **IIJ (AS2497)** and **AS2501** as the primary examples — the same two ASes IYP's own tutorial uses for this kind of query — walk from an AS's announced BGP address space to the domain names hosted inside it, in a single Cypher pattern. Compare against **Zayo (AS6461)**, a pure transit backbone of comparable stature, to see what a network with little hosted content looks like by the same measure.
 
-- [ ] **Q2.a**: For AS2497 and AS3356, how many distinct popular hostnames resolve into each AS's announced prefixes? What does the difference tell you about what kind of network each one is?
+- [ ] **Q2.a**: For AS2497 and AS6461, how many distinct popular hostnames resolve into each AS's announced prefixes, both in total and per announced prefix? What does the difference tell you about what kind of network each one is?
 - [ ] **Q2.b**: For AS2501, which authoritative nameservers manage the most domains hosted in its address space? Produce a table of nameserver → domain count.
 - [ ] **Q2.c**: This traversal joins BGP origin, prefix containment, and DNS resolution in one query. In [`nids-dns-ecosystem`](https://github.com/caida/nids-dns-ecosystem), the same kind of join required loading OpenINTEL DNS data and a separate BGP prefix-to-AS mapping, then joining them yourself in Spark. What did the graph traversal do in one step that took multiple stages there? What did you lose, if anything, by not doing it yourself?
 
@@ -51,10 +51,10 @@ Using **IIJ (AS2497)** and **AS2501** as the primary examples — the same two A
 
 **Builds on:** [nids-irr-rpki-whois](https://github.com/CAIDA/nids-irr-rpki-whois)
 
-Compare what an AS is cryptographically authorized to originate (an RPKI ROA) against what is actually observed in BGP, for **Level3/Lumen (AS3356)**, and then broaden the lens to a global scan of prefixes IYP has tagged `"RPKI Invalid"`.
+Compare what an AS is cryptographically authorized to originate (an RPKI ROA) against what is actually observed in BGP, for **Zayo (AS6461)**, and then broaden the lens to a global scan of prefixes IYP has tagged `"RPKI Invalid"`.
 
-- [ ] **Q3.a**: For AS3356, find every RPKI ROA (`ROUTE_ORIGIN_AUTHORIZATION`) that has no matching observed `BGPPrefix`. How many are there, and what might explain a ROA existing with no corresponding BGP announcement?
-- [ ] **Q3.b**: Across the whole graph, which 20 ASes originate the most prefixes tagged `"RPKI Invalid"`? Do any of the four running-example ASes (AS3356, AS2906, AS4837, AS2497) appear in that list?
+- [ ] **Q3.a**: For AS6461, find every RPKI ROA (`ROUTE_ORIGIN_AUTHORIZATION`) that has no exact matching observed `BGPPrefix`. How many are there, and what might explain a ROA existing with no corresponding BGP announcement?
+- [ ] **Q3.b**: Across the whole graph, which 20 ASes originate the most prefixes tagged `"RPKI Invalid"`? Do any of the four running-example ASes (AS6461, AS2906, AS4837, AS2497) appear in that list?
 - [ ] **Q3.c**: Does an `"RPKI Invalid"` tag prove a prefix hijack? What else could produce that tag (non-adoption, misconfiguration, legitimate deaggregation)? How does this graph-pattern comparison relate to the manual IRR/RPKI/BGP comparison you did (or would do) in [`nids-irr-rpki-whois`](https://github.com/CAIDA/nids-irr-rpki-whois)?
 
 [README](README.md) | [Introduction](Introduction.md) | [Datasets](Datasets.md) | [Cypher](Cypher.md) | Tasks ⮕ | [Task 1](Task-1.md) | [Task 2](Task-2.md) | [Task 3](Task-3.md) | [Notebook](nids-iyp.ipynb)

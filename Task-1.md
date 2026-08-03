@@ -11,7 +11,7 @@ An AS's name isn't a single property in IYP — it's a separate `Name` node, rea
 ```cypher
 // step 1: the three running-example ASes
 MATCH (a:AS)
-WHERE a.asn IN [3356, 2906, 4837]
+WHERE a.asn IN [6461, 2906, 4837]
 
 // step 2: CAIDA ASRank -- OPTIONAL because not every AS is ranked
 OPTIONAL MATCH (a)-[r:RANK {reference_name: 'caida.asrank'}]->(:Ranking)
@@ -51,7 +51,7 @@ LIMIT 10
 ```cypher
 // Per-AS: how many IXPs does each running-example AS belong to?
 MATCH (a:AS)-[:MEMBER_OF]->(ix:IXP)
-WHERE a.asn IN [3356, 2906, 4837]
+WHERE a.asn IN [6461, 2906, 4837]
 RETURN a.asn AS asn, count(DISTINCT ix) AS num_ixps
 ORDER BY num_ixps DESC
 ```
@@ -61,7 +61,7 @@ ORDER BY num_ixps DESC
 ```cypher
 // How many distinct ASes does each running-example AS peer with directly?
 MATCH (a:AS)-[:PEERS_WITH]-(b:AS)
-WHERE a.asn IN [3356, 2906, 4837]
+WHERE a.asn IN [6461, 2906, 4837]
 RETURN a.asn AS asn, count(DISTINCT b) AS num_peer_ases
 ORDER BY num_peer_ases DESC
 ```
