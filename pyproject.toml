@@ -8,5 +8,4 @@ dependencies = [
     "neo4j",
     "pandas",
     "matplotlib",
-    "python-dotenv",
 ]

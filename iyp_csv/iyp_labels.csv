@@ -1,15 +1,16 @@
 label,description,node_count
-AS,An Autonomous System,PENDING
-BGPPrefix,An IP prefix observed announced in BGP,PENDING
-RPKIPrefix,An IP prefix covered by an RPKI ROA,PENDING
-IP,A single IP address,PENDING
-HostName,A fully-qualified domain name,PENDING
-DomainName,A non-FQDN registrable domain,PENDING
-AuthoritativeNameServer,A DNS authoritative nameserver,PENDING
-IXP,An Internet exchange point,PENDING
-Name,A name string an entity is known by,PENDING
-Ranking,A specific ranking system (e.g. CAIDA ASRank, Tranco),PENDING
-Tag,A classification label applied to a resource,PENDING
-Country,A country,PENDING
-Organization,An organization that operates one or more ASes,PENDING
-BGPCollector,A route collector (e.g. a RIPE RIS or RouteViews session),PENDING
+AS,An Autonomous System,129602
+Prefix,"An IP prefix; supertype label also carried by BGPPrefix and RPKIPrefix",8726356
+BGPPrefix,An IP prefix observed announced in BGP,1548563
+RPKIPrefix,An IP prefix covered by an RPKI ROA,719990
+IP,A single IP address,7924880
+HostName,A fully-qualified domain name,21277397
+DomainName,A non-FQDN registrable domain,11186055
+AuthoritativeNameServer,A DNS authoritative nameserver,897427
+IXP,An Internet exchange point,1302
+Name,A name string an entity is known by,323416
+Ranking,"A specific ranking system (e.g. CAIDA ASRank, Tranco)",967
+Tag,A classification label applied to a resource,198
+Country,A country,254
+Organization,An organization that operates one or more ASes,105058
+BGPCollector,A route collector (e.g. a RIPE RIS or RouteViews session),80

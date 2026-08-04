@@ -6,7 +6,7 @@ README ⮕ | [Introduction](Introduction.md) | [Datasets](Datasets.md) | [Cypher
 
 ## Learning Objectives
 
-Other NIDS modules hand you one dataset at a time: an AS-ranking API, a table of BGP routes, a pile of DNS measurements, a set of RPKI ROAs. Answering a question that spans more than one of those means writing your own join logic to stitch them together. The [Internet Yellow Pages (IYP)](https://tutorial.iyp.ihr.live/) takes the opposite approach: it loads over 60 of these same kinds of Internet-measurement datasets into a single Neo4j graph database, where an Autonomous System, a BGP prefix, a hostname, and an IXP are all typed nodes connected by typed relationships. In this module you will learn Cypher, Neo4j's graph query language, and use it to explore an AS's ecosystem (ranking, IXP membership, peering), trace a single multi-hop path from an AS's announced address space to the domain names hosted inside it, and check whether an AS's RPKI authorizations match what is actually observed in BGP. By the end you should be able to write a multi-hop Cypher query that does in one step what would otherwise require joining several separate datasets by hand — and reason about what it means when independent data sources disagree about the same fact.
+Other NIDS modules hand you one dataset at a time: an AS-ranking API, a table of BGP routes, a pile of DNS measurements, a set of RPKI ROAs. Answering a question that spans more than one of those means writing your own join logic to stitch them together. The [Internet Yellow Pages (IYP)](https://iyp.iijlab.net/) takes the opposite approach: it loads over 80 of these same kinds of Internet-measurement datasets into a single Neo4j graph database, where an Autonomous System, a BGP prefix, a hostname, and an IXP are all typed nodes connected by typed relationships. In this module you will learn Cypher, Neo4j's graph query language, and use it to explore an AS's ecosystem (ranking, IXP membership, peering), trace a single multi-hop path from an AS's announced address space to the domain names hosted inside it, and check whether an AS's RPKI authorizations match what is actually observed in BGP. By the end you should be able to write a multi-hop Cypher query that does in one step what would otherwise require joining several separate datasets by hand — and reason about what it means when independent data sources disagree about the same fact.
 
 ## Overview
 
@@ -38,7 +38,7 @@ pip install -r requirements.txt
 jupyter lab nids-iyp.ipynb
 ```
 
-Before running any queries, set up `neo4j_credentials.env` — see [Datasets](Datasets.md#connecting). Ask your instructor how to reach the database: either your JupyterHub session runs inside the same NRP namespace as the IYP instance (connect directly), or you'll open a `kubectl port-forward` tunnel to it yourself and connect to `localhost` (see [Datasets](Datasets.md#connecting) for both connection strings).
+No database setup is required. The notebook queries the public IYP instance at `neo4j://iyp-bolt.ihr.live:7687`, which is read-only and needs no credentials — see [Datasets](Datasets.md#access-model). Because it is a live shared service rather than a frozen snapshot, record the date you ran your queries: the data is reloaded as its sources update.
 
 ### Directory Structure
 
@@ -52,7 +52,6 @@ nids-iyp
 ├- Task-2.md                                # Task 2 how-to guide
 ├- Task-3.md                                # Task 3 how-to guide
 ├- nids-iyp.ipynb                       ⬅  # Complete / Commit / Push
-├- neo4j_credentials.env.example            # Credentials template (copy to neo4j_credentials.env)
 ├- iyp_csv/                                 # Schema reference: labels, relationship types, properties
 ├- requirements.txt                         # Dependencies (pip + venv)
 ├- pyproject.toml / uv.lock                 # Dependencies (uv)
@@ -60,7 +59,7 @@ nids-iyp
 
 ### Glossary
 
-- **IYP (Internet Yellow Pages)**: A Neo4j graph database, maintained by the Internet Health Report (IHR) project, that unifies over 60 Internet-measurement datasets into one queryable graph of typed nodes and relationships.
+- **IYP (Internet Yellow Pages)**: A Neo4j graph database, maintained by the Internet Health Report (IHR) project, that unifies over 80 Internet-measurement datasets into one queryable graph of typed nodes and relationships.
 - **Neo4j**: The graph database management system IYP is built on.
 - **Cypher**: Neo4j's query language, used to describe and match patterns of nodes and relationships in the graph.
 - **Node**: A single entity in the graph — an `AS`, a `BGPPrefix`, a `HostName`, an `IXP`, etc. Every node has one or more **labels** naming its type.

@@ -4,69 +4,63 @@
 
 **Builds on:** [nids-asn-introduction](https://github.com/CAIDA/nids-asn-introduction)
 
+Running examples throughout this task: **AS6461** (Zayo, a transit backbone), **AS2906** (Netflix, a content provider), **AS4837** (China Unicom, a national gateway). None of the fragments below are assembled into a final query — you build each graded query yourself from the pieces here plus [Cypher](Cypher.md).
+
 ## Canonical Names and CAIDA ASRank
 
-An AS's name isn't a single property in IYP — it's a separate `Name` node, reached through a `NAME` relationship, and different sources can (and do) report different names for the same AS (see [Introduction](Introduction.md#nodes-relationships-and-provenance)). To get one merged name back, `OPTIONAL MATCH` each source individually and `coalesce()` them:
+An AS's name isn't a single property in IYP — it's a separate `Name` node, reached through a `NAME` relationship, and different sources can (and do) report different names for the same AS (see [Introduction](Introduction.md#nodes-relationships-and-provenance)).
+
+Start from all three running examples at once — [Cypher §3.1](Cypher.md#31-filter-by-a-property) covers filtering by one value, and `IN` extends the same indexed lookup to a list of them:
 
 ```cypher
-// step 1: the three running-example ASes
 MATCH (a:AS)
-WHERE a.asn IN [3356, 2906, 4837]
-
-// step 2: CAIDA ASRank -- OPTIONAL because not every AS is ranked
-OPTIONAL MATCH (a)-[r:RANK {reference_name: 'caida.asrank'}]->(:Ranking)
-
-// step 3: one NAME source per OPTIONAL MATCH, so a missing source doesn't
-// drop the whole row -- each is filtered to a single reference_org/reference_name
-// so we don't accidentally average together sources that disagree
-OPTIONAL MATCH (a)-[:NAME {reference_org: 'PeeringDB'}]->(n1:Name)
-OPTIONAL MATCH (a)-[:NAME {reference_org: 'BGP.Tools'}]->(n2:Name)
-OPTIONAL MATCH (a)-[:NAME {reference_name: 'ripe.as_names'}]->(n3:Name)
-
-// step 4: coalesce picks the first non-null -- the "canonical" name -- but we
-// also return each source individually so a disagreement is visible, not hidden
-RETURN a.asn AS asn,
-       r.rank AS as_rank,
-       coalesce(n1.name, n2.name, n3.name) AS canonical_name,
-       n1.name AS peeringdb_name,
-       n2.name AS bgptools_name,
-       n3.name AS ripe_name
-ORDER BY as_rank
+WHERE a.asn IN [6461, 2906, 4837]
+RETURN a.asn
 ```
 
-Run it with `run_query()` (see [Cypher](Cypher.md#1-running-cypher-from-python)) and the rows come back as a DataFrame with one row per AS.
+CAIDA's ASRank is one `RANK` relationship, pinned to its own `reference_name`, `caida.asrank` (see [Cypher §3.5](Cypher.md#35-filtering-by-reference_org--reference_name) for the general shape of a pinned relationship filter — here it's `reference_name` rather than `reference_org`). Use `OPTIONAL MATCH` ([Cypher §3.4](Cypher.md#34-optional-match-for-possibly-missing-relationships)) since not every AS is ranked:
+
+```cypher
+MATCH (a:AS {asn: 6461})
+OPTIONAL MATCH (a)-[r:RANK {reference_name: 'caida.asrank'}]->(:Ranking)
+RETURN a.asn, r.rank
+```
+
+Names work the same way, but with three sources worth checking, and they don't all key off the same property — PeeringDB and bgp.tools set `reference_org`, but the RIPE NCC source doesn't; it's identified by `reference_name: 'ripe.as_names'` instead. (If you're ever unsure which property a source uses, run an unfiltered `MATCH (a:AS {asn: ...})-[r:NAME]-(n:Name) RETURN r.reference_org, r.reference_name, n.name` for one AS and look at what comes back.) One source, `OPTIONAL MATCH`ed:
+
+```cypher
+MATCH (a:AS {asn: 6461})
+OPTIONAL MATCH (a)-[:NAME {reference_org: 'PeeringDB'}]->(n:Name)
+RETURN a.asn, n.name AS peeringdb_name
+```
+
+You'll want one `OPTIONAL MATCH` like this per source (PeeringDB, bgp.tools, RIPE), each returning its own named column — not merged yet, so a disagreement between sources stays visible instead of being hidden. [Cypher §3.11](Cypher.md#311-coalesce-across-multiple-sources) shows `coalesce()` combining two sources into one canonical value the same way you'll combine these three.
+
+Put together: the multi-AS filter, the ASRank `OPTIONAL MATCH`, one `OPTIONAL MATCH` per `NAME` source, and a `coalesce()` over all three name columns, in a single query returning one row per AS.
 
 ## IXP Membership
 
-Two separate queries: a global top-10 (no filter — this is a graph-wide question, not one about the three running-example ASes), and a per-AS membership count for the three ASes.
+This is two separate questions, at two different scopes: a graph-wide question (which IXPs are largest, full stop) and a running-examples question (how do these three ASes compare). `MEMBER_OF` is the relationship either way ([Cypher §3.2](Cypher.md#32-traverse-a-relationship-one-hop)):
 
 ```cypher
-// Global: which 10 IXPs have the most AS members?
-MATCH (m:AS)-[:MEMBER_OF]->(ix:IXP)
-RETURN ix.name AS ixp_name, count(DISTINCT m) AS num_members
-ORDER BY num_members DESC
+MATCH (a:AS {asn: 6461})-[:MEMBER_OF]->(ix:IXP)
+RETURN ix.name
 LIMIT 10
 ```
 
-```cypher
-// Per-AS: how many IXPs does each running-example AS belong to?
-MATCH (a:AS)-[:MEMBER_OF]->(ix:IXP)
-WHERE a.asn IN [3356, 2906, 4837]
-RETURN a.asn AS asn, count(DISTINCT ix) AS num_ixps
-ORDER BY num_ixps DESC
-```
+The global top-10 question has no `WHERE` at all — it isn't about the running examples, it's about every `AS` in the graph, aggregated by IXP (see [Cypher §3.9](Cypher.md#39-aggregation-collect-count-distinct) for `count(DISTINCT ...)` + `ORDER BY` + `LIMIT`). The per-AS question is the multi-AS filter from the names section above, aggregated the same way but grouped by AS instead of by IXP. Same building blocks, two different things being counted.
 
 ## Peering Degree
 
+`PEERS_WITH` connects two `AS` nodes directly — one hop, aggregated the same way as IXP membership above:
+
 ```cypher
-// How many distinct ASes does each running-example AS peer with directly?
-MATCH (a:AS)-[:PEERS_WITH]-(b:AS)
-WHERE a.asn IN [3356, 2906, 4837]
-RETURN a.asn AS asn, count(DISTINCT b) AS num_peer_ases
-ORDER BY num_peer_ases DESC
+MATCH (a:AS {asn: 6461})-[:PEERS_WITH]-(b:AS)
+RETURN b.asn
+LIMIT 10
 ```
 
-> **Gotcha:** `PEERS_WITH` can also connect an `AS` to a `BGPCollector` — a route-collector monitoring session, not a real peering relationship. The query above already excludes those by requiring the other end to match `(b:AS)`, but if you write a variant without an explicit label on both ends, double-check what's actually on the far side of the relationship before you count it.
+> **Gotcha:** `PEERS_WITH` can also connect an `AS` to a `BGPCollector` — a route-collector monitoring session, not a real peering relationship. Label both ends explicitly (`(a:AS)-[:PEERS_WITH]-(b:AS)`, as above) so a collector session can't silently fold into your count. If you write a variant without an explicit label on the far end, check what's actually there before you count it.
 
 ## What Your Write-Up Should Address
 
