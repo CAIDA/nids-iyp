@@ -4,6 +4,10 @@ README ⮕ | [Introduction](Introduction.md) | [Datasets](Datasets.md) | [Cypher
 
 **GitHub:** https://github.com/CAIDA/nids-iyp
 
+## Authors
+
+Bradley Huffaker, Romain Fontugne, Malte Tashiro
+
 ## Learning Objectives
 
 Other NIDS modules hand you one dataset at a time: an AS-ranking API, a table of BGP routes, a pile of DNS measurements, a set of RPKI ROAs. Answering a question that spans more than one of those means writing your own join logic to stitch them together. The [Internet Yellow Pages (IYP)](https://iyp.iijlab.net/) takes the opposite approach: it loads over 80 of these same kinds of Internet-measurement datasets into a single Neo4j graph database, where an Autonomous System, a BGP prefix, a hostname, and an IXP are all typed nodes connected by typed relationships. In this module you will learn Cypher, Neo4j's graph query language, and use it to explore an AS's ecosystem (ranking, IXP membership, peering), trace a single multi-hop path from an AS's announced address space to the domain names hosted inside it, and check whether an AS's RPKI authorizations match what is actually observed in BGP. By the end you should be able to write a multi-hop Cypher query that does in one step what would otherwise require joining several separate datasets by hand — and reason about what it means when independent data sources disagree about the same fact.
@@ -66,7 +70,7 @@ nids-iyp
 - **Relationship**: A typed, directed edge connecting two nodes, e.g. `ORIGINATE`, `RESOLVES_TO`, `MEMBER_OF`. Relationships carry their own properties, separately from the nodes they connect.
 - **Reference / provenance properties**: Every relationship in IYP records where the fact came from — `reference_org`, `reference_name`, `reference_time_fetch`, `reference_url_data`, etc. Because different datasets can disagree about the same fact, IYP stores each source's claim as its own relationship rather than overwriting a single property.
 - **AS (Autonomous System)**: A network under one administrative control, identified by an ASN; see `nids-asn-introduction` for a deeper introduction.
-- **BGP / Prefix / Origin**: The routing protocol ASes use to announce which IP prefixes they carry traffic for; the AS that announces a prefix is its *origin*. See `nids-bgp-control-plane`.
+- **BGP / Prefix / Origin**: The routing protocol ASes use to announce which IP prefixes they carry traffic for; the AS that announces a prefix is its _origin_. See `nids-bgp-control-plane`.
 - **RPKI / ROA**: Resource Public Key Infrastructure and its core object, the Route Origin Authorization — a cryptographically signed statement of which AS is authorized to originate a given prefix. See `nids-irr-rpki-whois`.
 - **IXP (Internet Exchange Point)**: A physical facility where multiple ASes interconnect and exchange traffic directly, rather than through transit.
 - **HostName / DomainName**: A fully-qualified domain name (`www.example.com`) is a `HostName`; a non-FQDN registrable name (`example.com`) is a `DomainName`. See `nids-dns-ecosystem`.
