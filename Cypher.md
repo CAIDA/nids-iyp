@@ -4,15 +4,16 @@
 
 This guide builds up the Cypher you need for the three tasks, one piece at a time, and shows how to run each query from Python so the result comes back as a pandas DataFrame. Every query targets the labels and relationship types described in [Datasets](Datasets.md); read that page first for the full schema and the [Writing Efficient Queries](Datasets.md#writing-efficient-queries) rules the examples below follow.
 
-Each [Task guide](Task.md) contains the complete, commented query for that task. This page explains the *building blocks* those queries are assembled from.
+Each [Task guide](Task.md) walks through the pieces a graded query needs, but never hands you the assembled query itself — you build that from the building blocks this page teaches.
 
 ## 1. Running Cypher from Python
 
-The notebook opens one Neo4j driver (see [Datasets](Datasets.md#connecting)):
+The notebook opens one Neo4j driver (see [Datasets](Datasets.md#connecting)). The public IYP instance
+takes no credentials, so `auth` is `None`:
 
 ```python
 from neo4j import GraphDatabase
-db = GraphDatabase.driver(IYP_URI, auth=(IYP_USER, IYP_PASSWORD))
+db = GraphDatabase.driver("neo4j://iyp-bolt.ihr.live:7687", auth=None)
 ```
 
 You never format query results yourself. Hand a Cypher string (and any parameters) to `db.execute_query`, which runs the query and returns `(records, summary, keys)`:
@@ -32,7 +33,7 @@ The notebook wraps this pattern in a `run_query()` helper (see [Task.md](Task.md
 
 ## 2. Node and Relationship Types
 
-The full label/relationship-type reference is in [Datasets](Datasets.md#node-labels). Everything in this module traverses a small subset of it: `AS`, `BGPPrefix`, `RPKIPrefix`, `IP`, `HostName`, `IXP`, `Ranking`, `Name`, `Tag`, connected by `ORIGINATE`, `ROUTE_ORIGIN_AUTHORIZATION`, `PEERS_WITH`, `MEMBER_OF`, `PART_OF`, `RESOLVES_TO`, `MANAGED_BY`, `NAME`, `RANK`, and `CATEGORIZED`.
+The full label/relationship-type reference is in [Datasets](Datasets.md#node-labels). Everything in this module traverses a small subset of it: `AS`, `BGPPrefix`, `RPKIPrefix`, `Prefix`, `IP`, `HostName`, `DomainName`, `AuthoritativeNameServer`, `IXP`, `Ranking`, `Name`, `Tag`, connected by `ORIGINATE`, `ROUTE_ORIGIN_AUTHORIZATION`, `PEERS_WITH`, `MEMBER_OF`, `PART_OF`, `RESOLVES_TO`, `MANAGED_BY`, `NAME`, `RANK`, and `CATEGORIZED`.
 
 ## 3. Building Blocks
 
@@ -91,17 +92,52 @@ Now every one of the AS's prefixes appears in the result, even the ones with no 
 
 ### 3.5 Filtering by `reference_org` / `reference_name`
 
-Because multiple sources can populate the same relationship type, add an inline property filter on the *relationship* (not just the nodes) when you want one source's claim specifically:
+Because multiple sources can populate the same relationship type, add an inline property filter directly on the *relationship* (not just the nodes) when you want one source's claim specifically — the same `{key: value}` shorthand you already used for nodes in §3.1, just moved onto the relationship pattern:
 
 ```cypher
-MATCH (a:AS {asn: 2497})-[mem:MEMBER_OF]-(ix:IXP)
-WHERE mem.reference_org <> 'PeeringDB'
+MATCH (a:AS {asn: 2497})-[mem:MEMBER_OF {reference_org: 'PeeringDB'}]-(ix:IXP)
 RETURN ix.name, mem.reference_org
 ```
 
 Skipping this filter when a task calls for it means silently mixing multiple sources' claims together — see [Datasets](Datasets.md#writing-efficient-queries).
 
-### 3.6 Aggregation: `collect()`, `count()`, `DISTINCT`
+### 3.6 Filtering a node by property mid-chain
+
+The inline `{key: value}` filter from §3.1 isn't limited to the first node in a `MATCH` — it works on any node in the chain, including one several hops in. This narrows a multi-hop traversal to only the paths that pass through a *specific* node, not just any node of that label:
+
+```cypher
+MATCH (h:HostName)-[:RANK]-(:Ranking {name: 'Cisco Umbrella Top 1 million'})
+RETURN h.name
+LIMIT 10
+```
+
+Without the `{name: ...}` filter, `(:Ranking)` alone would match *any* of IYP's hundreds of `Ranking` nodes — a much weaker condition than "on this specific popularity list." Pinning a mid-chain node this way is how you narrow a traversal to one source's claim even when that node isn't the one you started from.
+
+### 3.7 `WHERE NOT` — excluding a pattern
+
+`MATCH` finds rows where a pattern *exists*; `WHERE NOT (...)` keeps only the rows where a second pattern *doesn't*. The pattern inside `WHERE NOT` can reference a variable already bound earlier in the query — including one of its properties — which lets you ask "does a matching node with this same property value exist somewhere else":
+
+```cypher
+MATCH (a:AS {asn: 2497})-[:NAME {reference_org: 'PeeringDB'}]-(n1:Name)
+WHERE NOT (a)-[:NAME {reference_org: 'bgp.tools'}]-(:Name {name: n1.name})
+RETURN n1.name AS peeringdb_name
+```
+
+`{name: n1.name}` inside the `WHERE NOT` pattern is the part worth noticing: it isn't a literal, it's a reference back to the `n1` node bound by the first `MATCH`. This returns AS2497's PeeringDB name only if *no* `bgp.tools` `Name` node has that exact same string — i.e., the two sources' claims don't match character-for-character, not just that one or the other is missing. Useful whenever the question is about two sources agreeing or disagreeing on a value, not just about a relationship being present or absent.
+
+### 3.8 `STARTS WITH`
+
+`=` matches a property value exactly; `STARTS WITH` matches a string prefix, which matters when a label or tag isn't a fixed, closed set of values. IYP's `Tag.label` is one such case — some tags carry extra detail appended after a comma (e.g. a base tag plus a qualifier), so `=` would silently miss anything but the exact base string:
+
+```cypher
+MATCH (t:Tag)
+WHERE t.label STARTS WITH "RPKI"
+RETURN DISTINCT t.label
+```
+
+Check what values a property actually takes (as above, with `DISTINCT`) before deciding whether `=` is precise enough or you need `STARTS WITH`.
+
+### 3.9 Aggregation: `collect()`, `count()`, `DISTINCT`
 
 `collect()` gathers values across matched rows into a list; `count()` counts them. Both respect `DISTINCT` the same way SQL's aggregates do:
 
@@ -112,7 +148,7 @@ ORDER BY num_members DESC
 LIMIT 10
 ```
 
-### 3.7 Staging a query with `WITH`
+### 3.10 Staging a query with `WITH`
 
 `WITH` passes the result of one part of a query into the next, letting you compute an intermediate aggregate (or filter) before continuing the pattern — the Cypher equivalent of a SQL CTE:
 
@@ -124,18 +160,18 @@ RETURN a.asn, num_peers
 ORDER BY num_peers DESC
 ```
 
-### 3.8 `coalesce()` across multiple sources
+### 3.11 `coalesce()` across multiple sources
 
 When several `NAME` relationships (one per source) might exist for the same node, `OPTIONAL MATCH` each source separately and pick the first non-null with `coalesce()` — this is how you get one canonical name back instead of one row per source:
 
 ```cypher
 MATCH (a:AS {asn: 2497})
 OPTIONAL MATCH (a)-[:NAME {reference_org: 'PeeringDB'}]->(n1:Name)
-OPTIONAL MATCH (a)-[:NAME {reference_org: 'BGP.Tools'}]->(n2:Name)
+OPTIONAL MATCH (a)-[:NAME {reference_org: 'bgp.tools'}]->(n2:Name)
 RETURN a.asn, coalesce(n1.name, n2.name) AS name
 ```
 
-### 3.9 Parameterized queries from Python
+### 3.12 Parameterized queries from Python
 
 Pass values as query parameters instead of formatting them into the query string — `execute_query` (and the notebook's `run_query()` wrapper) accept them as keyword arguments:
 
@@ -154,7 +190,7 @@ Once a query returns a DataFrame, the analysis is plain pandas — the same idio
 
 - **Sort and limit** — `df.sort_values("num_members", ascending=False).head(10)`.
 - **Count distinct within groups** — `df.groupby("asn")["name"].nunique()`.
-- **Label codes with names** — `df["asn"].map(names_by_asn)` to swap ASNs for the canonical names you resolved with `coalesce()` in §3.8.
+- **Label codes with names** — `df["asn"].map(names_by_asn)` to swap ASNs for the canonical names you resolved with `coalesce()` in §3.11.
 
 ## 5. Writing Efficient Queries
 
