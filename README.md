@@ -38,7 +38,7 @@ pip install -r requirements.txt
 jupyter lab nids-iyp.ipynb
 ```
 
-Before running any queries, set up `neo4j_credentials.env` — see [Datasets](Datasets.md#connecting). Ask your instructor how to reach the database: either your JupyterHub session runs inside the same NRP namespace as the IYP instance (connect directly), or you'll open a `kubectl port-forward` tunnel to it yourself and connect to `localhost` (see [Datasets](Datasets.md#connecting) for both connection strings).
+No database setup is required. The notebook queries the public IYP instance at `neo4j://iyp-bolt.ihr.live:7687`, which is read-only and needs no credentials — see [Datasets](Datasets.md#access-model). Because it is a live shared service rather than a frozen snapshot, record the date you ran your queries: the data is reloaded as its sources update.
 
 ### Directory Structure
 
@@ -52,7 +52,6 @@ nids-iyp
 ├- Task-2.md                                # Task 2 how-to guide
 ├- Task-3.md                                # Task 3 how-to guide
 ├- nids-iyp.ipynb                       ⬅  # Complete / Commit / Push
-├- neo4j_credentials.env.example            # Credentials template (copy to neo4j_credentials.env)
 ├- iyp_csv/                                 # Schema reference: labels, relationship types, properties
 ├- requirements.txt                         # Dependencies (pip + venv)
 ├- pyproject.toml / uv.lock                 # Dependencies (uv)

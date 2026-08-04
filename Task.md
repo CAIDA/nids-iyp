@@ -22,10 +22,15 @@ Complete the tasks below in order. All three tasks are completed inside [nids-iy
   jupyter lab nids-iyp.ipynb
   ```
 
-- step 2. Copy `neo4j_credentials.env.example` to `neo4j_credentials.env` and fill in the read-only username/password from your instructor (see [Datasets](Datasets.md#connecting)).
-- step 3. Confirm you can reach the database: either your JupyterHub session runs inside the same NRP namespace as the instance, or open the `kubectl port-forward` tunnel your instructor gives you.
+- step 2. Run the notebook's setup cell. It connects to the public IYP instance at
+  `neo4j://iyp-bolt.ihr.live:7687`, which needs no credentials — there is nothing to configure (see
+  [Datasets](Datasets.md#connecting)).
+- step 3. Confirm the connection check prints the node and relationship counts it queries. If it
+  fails, you have a network problem rather than a credentials problem.
 - step 4. Complete each task by replacing the `# YOUR CODE HERE` sections and answer all questions.
-- step 5. Save your completed notebook, commit, and push.
+- step 5. Note the date you ran your queries. The public instance is reloaded as its sources update,
+  so your numbers are only interpretable alongside when you collected them.
+- step 6. Save your completed notebook, commit, and push.
 
 ## Task 1: The AS Ecosystem — Ranking, IXPs, and Peering
 
