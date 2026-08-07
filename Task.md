@@ -40,7 +40,7 @@ Using three running-example autonomous systems — **Zayo (AS6461)**, **Netflix 
 
 - [ ] **Q1.a**: For each of the three ASes, resolve a canonical name across multiple `NAME` sources and look up its CAIDA ASRank. Do the sources agree on the name? Report both the merged name and each individual source's claim.
 - [ ] **Q1.b**: Which 10 IXPs have the most AS members globally? Separately, how many IXPs does each of the three ASes belong to?
-- [ ] **Q1.c**: How many distinct ASes does each of the three peer with directly (`PEERS_WITH`)? Write a short paragraph relating peering degree, IXP membership, and ASRank for these three networks — do they move together the way you'd expect?
+- [ ] **Q1.c**: How many distinct ASes does each of the three peer with directly (`PEERS_WITH` — every BGP peering session, not only settlement-free peering agreements; see [Task 1](Task-1.md#peering-degree))? Write a short paragraph relating peering degree, IXP membership, and ASRank for these three networks — do they move together the way you'd expect?
 
 ## Task 2: Bridging BGP and DNS in One Traversal
 

@@ -52,6 +52,8 @@ The global top-10 question has no `WHERE` at all — it isn't about the running 
 
 ## Peering Degree
 
+**"Peering" here means a BGP peering session, not a settlement-free peering agreement.** The term is badly overloaded. In a business context, "peering" (p2p) is contrasted with "transit" (p2c), where one AS pays another to carry its traffic. `PEERS_WITH` does not make that distinction — it records that two ASes exchange routes directly, whatever the commercial arrangement behind it. So an AS's *peering degree* in this task is simply how many other ASes it has a direct BGP adjacency with, transit providers and customers included.
+
 `PEERS_WITH` connects two `AS` nodes directly — one hop, aggregated the same way as IXP membership above:
 
 ```cypher
@@ -61,6 +63,8 @@ LIMIT 10
 ```
 
 > **Gotcha:** `PEERS_WITH` can also connect an `AS` to a `BGPCollector` — a route-collector monitoring session, not a real peering relationship. Label both ends explicitly (`(a:AS)-[:PEERS_WITH]-(b:AS)`, as above) so a collector session can't silently fold into your count. If you write a variant without an explicit label on the far end, check what's actually there before you count it.
+
+> **Worth trying:** the p2p/p2c distinction *is* in the graph, just not as a separate relationship type — an `AS`—`AS` `PEERS_WITH` carries a `rel` property recording the business relationship. The two sources that populate it disagree on the encoding: CAIDA (`caida.as_relationships_v4`/`_v6`) uses `0` for peer-to-peer and `-1` for provider-to-customer, while BGPKIT (`bgpkit.as2rel_v4`/`_v6`) uses `0` and `1`. Reading `rel` without first pinning `reference_org` or `reference_name` therefore mixes two incompatible conventions — the same provenance trap [Datasets](Datasets.md#writing-efficient-queries) warns about. `PEERS_WITH` is also one of the few relationship types where direction is meaningful: a provider-to-customer edge is stored as `(provider:AS)-[:PEERS_WITH]->(customer:AS)`, which the undirected `-[:PEERS_WITH]-` above deliberately ignores. None of this is needed for Q1.c — that count is over all sessions — but returning `r.rel` alongside your peers shows how much of a network's degree is transit rather than settlement-free.
 
 ## What Your Write-Up Should Address
 

@@ -30,7 +30,7 @@ This module queries the public **Neo4j** instance of IYP operated by the IHR pro
 | --- | --- | --- | --- |
 | `ORIGINATE` | `AS` → `BGPPrefix` | `reference_name` (e.g. `bgpkit.pfx2asn`) | Observed BGP origin |
 | `ROUTE_ORIGIN_AUTHORIZATION` | `AS` → `RPKIPrefix` | `reference_name` | An RPKI ROA |
-| `PEERS_WITH` | `AS` — `AS`, or `AS` — `BGPCollector` | `num_v4_pfxs`, `num_v6_pfxs` | BGP peering, or a monitoring session |
+| `PEERS_WITH` | `AS` — `AS`, or `AS` — `BGPCollector` | `rel` (`AS`—`AS`); `num_v4_pfxs`, `num_v6_pfxs` (`AS`—`BGPCollector`) | A BGP peering session — any direct adjacency, not only settlement-free peering — or a route-collector monitoring session. `rel` records the business relationship: `0` peer-to-peer, `-1` (CAIDA) or `1` (BGPKIT) provider-to-customer, stored as `(provider)->(customer)` |
 | `MEMBER_OF` | `AS` → `IXP` | `reference_org` | IXP membership |
 | `PART_OF` | `IP` → `Prefix`; `HostName` → `DomainName` | — | Containment |
 | `RESOLVES_TO` | `HostName` → `IP` | `reference_name` | DNS A/AAAA resolution |
