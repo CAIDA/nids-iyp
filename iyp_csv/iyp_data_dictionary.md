@@ -17,7 +17,9 @@ alongside where and when it came from.
 
 ## Node Labels
 
-See [`iyp_labels.csv`](iyp_labels.csv) for the full list. The ones used in this module:
+See [`iyp_labels.csv`](iyp_labels.csv) for the full list, and
+[`iyp_node_properties.csv`](iyp_node_properties.csv) for their properties. The ones used in this
+module:
 
 | Label | Represents |
 | --- | --- |
@@ -28,7 +30,7 @@ See [`iyp_labels.csv`](iyp_labels.csv) for the full list. The ones used in this 
 | `IP` | A single IP address |
 | `HostName` | A fully-qualified domain name |
 | `DomainName` | A non-FQDN registrable domain |
-| `AuthoritativeNameServer` | A DNS authoritative nameserver |
+| `AuthoritativeNameServer` | A DNS authoritative nameserver — also carries the `HostName` label |
 | `IXP` | An Internet exchange point |
 | `Name` | A name string an entity is known by |
 | `Ranking` | A specific ranking system |
@@ -41,3 +43,7 @@ See [`iyp_relationship_types.csv`](iyp_relationship_types.csv) for the full list
 Every relationship type also carries the reference/provenance properties described in
 [Introduction.md](../Introduction.md#nodes-relationships-and-provenance) -- these aren't
 re-listed per type in the CSV since they're common to all of them.
+
+Direction is meaningful for `PART_OF`: it is always stored *contained* -> *container*, including
+between two prefixes. The arrowhead in your pattern therefore decides whether you get the
+more-specifics announced inside a prefix or the less-specific block that prefix sits inside.

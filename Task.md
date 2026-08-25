@@ -25,8 +25,9 @@ Complete the tasks below in order. All three tasks are completed inside [nids-iy
 - step 2. Run the notebook's setup cell. It connects to the public IYP instance at
   `neo4j://iyp-bolt.ihr.live:7687`, which needs no credentials — there is nothing to configure (see
   [Datasets](Datasets.md#connecting)).
-- step 3. Confirm the connection check prints the node and relationship counts it queries. If it
-  fails, you have a network problem rather than a credentials problem.
+- step 3. Run the connection check — a one-hop `RANK` lookup for a single AS that returns its CAIDA
+  ASRank. A row coming back means the connection works. If it fails, you have a network problem
+  rather than a credentials problem.
 - step 4. Complete each task by replacing the `# YOUR CODE HERE` sections and answer all questions.
 - step 5. Note the date you ran your queries. The public instance is reloaded as its sources update,
   so your numbers are only interpretable alongside when you collected them.
@@ -44,13 +45,13 @@ Using three running-example autonomous systems — **Zayo (AS6461)**, **Netflix 
 
 ## Task 2: Bridging BGP and DNS in One Traversal
 
-**Builds on:** [nids-asn-introduction](https://github.com/CAIDA/nids-asn-introduction), [nids-dns-ecosystem](https://github.com/caida/nids-dns-ecosystem)
+**Builds on:** [nids-asn-introduction](https://github.com/CAIDA/nids-asn-introduction), [nids-dns-ecosystem](https://github.com/CAIDA/nids-dns-ecosystem)
 
 Using **IIJ (AS2497)** and **AS2501** as the primary examples — the same two ASes IYP's own tutorial uses for this kind of query — walk from an AS's announced BGP address space to the domain names hosted inside it, in a single Cypher pattern. Compare against **Zayo (AS6461)**, a pure transit backbone of comparable stature, to see what a network with little hosted content looks like by the same measure.
 
 - [ ] **Q2.a**: For AS2497 and AS6461, how many distinct popular hostnames resolve into each AS's announced prefixes, both in total and per announced prefix? What does the difference tell you about what kind of network each one is?
 - [ ] **Q2.b**: For AS2501, which authoritative nameservers manage the most domains hosted in its address space? Produce a table of nameserver → domain count.
-- [ ] **Q2.c**: This traversal joins BGP origin, prefix containment, and DNS resolution in one query. In [`nids-dns-ecosystem`](https://github.com/caida/nids-dns-ecosystem), the same kind of join required loading OpenINTEL DNS data and a separate BGP prefix-to-AS mapping, then joining them yourself in Spark. What did the graph traversal do in one step that took multiple stages there? What did you lose, if anything, by not doing it yourself?
+- [ ] **Q2.c**: This traversal joins BGP origin, prefix containment, and DNS resolution in one query. In [`nids-dns-ecosystem`](https://github.com/CAIDA/nids-dns-ecosystem), the same kind of join required loading OpenINTEL DNS data and a separate BGP prefix-to-AS mapping, then joining them yourself in Spark. What did the graph traversal do in one step that took multiple stages there? What did you lose, if anything, by not doing it yourself?
 
 ## Task 3: RPKI-Authorized vs. BGP-Observed Origins
 
@@ -58,7 +59,7 @@ Using **IIJ (AS2497)** and **AS2501** as the primary examples — the same two A
 
 Compare what an AS is cryptographically authorized to originate (an RPKI ROA) against what is actually observed in BGP, for **Zayo (AS6461)**, and then broaden the lens to a global scan of prefixes IYP has tagged `"RPKI Invalid"`.
 
-- [ ] **Q3.a**: For AS6461, find every RPKI ROA (`ROUTE_ORIGIN_AUTHORIZATION`) that has no exact matching observed `BGPPrefix`. How many are there, and what might explain a ROA existing with no corresponding BGP announcement?
+- [ ] **Q3.a**: For AS6461, find every RPKI ROA (`ROUTE_ORIGIN_AUTHORIZATION`) that has no exact matching observed `BGPPrefix`. How many are there? Break them down by whether the address space is announced at some *other* prefix length — more-specific, less-specific, or not at all — and explain what each group plausibly means.
 - [ ] **Q3.b**: Across the whole graph, which 20 ASes originate the most prefixes tagged `"RPKI Invalid"`? Do any of the four running-example ASes (AS6461, AS2906, AS4837, AS2497) appear in that list?
 - [ ] **Q3.c**: Does an `"RPKI Invalid"` tag prove a prefix hijack? What else could produce that tag (non-adoption, misconfiguration, legitimate deaggregation)? How does this graph-pattern comparison relate to the manual IRR/RPKI/BGP comparison you did (or would do) in [`nids-irr-rpki-whois`](https://github.com/CAIDA/nids-irr-rpki-whois)?
 

@@ -26,7 +26,7 @@ OPTIONAL MATCH (a)-[r:RANK {reference_name: 'caida.asrank'}]->(:Ranking)
 RETURN a.asn, r.rank
 ```
 
-Names work the same way, but with three sources worth checking, and they don't all key off the same property — PeeringDB and bgp.tools set `reference_org`, but the RIPE NCC source doesn't; it's identified by `reference_name: 'ripe.as_names'` instead. (If you're ever unsure which property a source uses, run an unfiltered `MATCH (a:AS {asn: ...})-[r:NAME]-(n:Name) RETURN r.reference_org, r.reference_name, n.name` for one AS and look at what comes back.) One source, `OPTIONAL MATCH`ed:
+Names work the same way, but with three sources worth checking. Each `NAME` relationship carries both a `reference_org` naming the publisher (`PeeringDB`, `bgp.tools`, `RIPE NCC`) and a `reference_name` naming the specific dataset (`peeringdb.ix`, `bgptools.as_names`, `ripe.as_names`), so either property will pin a source here. Prefer `reference_name` when you want to be exact: it identifies one dataset, whereas one organization can publish several. (To see what a given AS actually carries, run an unfiltered `MATCH (a:AS {asn: ...})-[r:NAME]-(n:Name) RETURN r.reference_org, r.reference_name, n.name` and look at what comes back — there are more sources in the graph than the three this task asks for.) One source, `OPTIONAL MATCH`ed:
 
 ```cypher
 MATCH (a:AS {asn: 6461})

@@ -63,7 +63,7 @@ MATCH (a:AS {asn: 2497})-[:MEMBER_OF]-(ix:IXP)
 RETURN ix.name
 ```
 
-Relationships in Cypher patterns are undirected by default (`-[:TYPE]-`); add an arrowhead (`-[:TYPE]->`) only when the direction actually matters to the question you're asking.
+Relationships in Cypher patterns are undirected by default (`-[:TYPE]-`); add an arrowhead (`-[:TYPE]->`) only when the direction actually matters to the question you're asking. `PART_OF` between two prefixes is this module's case where it does: one direction gives you the more-specific prefixes announced inside a block, the other the larger block that prefix sits inside, and undirected gives you both mixed into one column — see [Task 3](Task-3.md#which-way-does-the-containment-run).
 
 ### 3.3 Multi-hop traversal (chaining relationship types)
 
@@ -142,11 +142,13 @@ Check what values a property actually takes (as above, with `DISTINCT`) before d
 `collect()` gathers values across matched rows into a list; `count()` counts them. Both respect `DISTINCT` the same way SQL's aggregates do:
 
 ```cypher
-MATCH (m:AS)-[:MEMBER_OF]->(ix:IXP)
-RETURN ix.name AS ixp_name, count(DISTINCT m) AS num_members
-ORDER BY num_members DESC
+MATCH (ix:IXP)-[:COUNTRY]->(c:Country)
+RETURN c.country_code AS country, count(DISTINCT ix) AS num_ixps
+ORDER BY num_ixps DESC
 LIMIT 10
 ```
+
+That shape — match a pattern, group by one end, count the other, sort, truncate — is the one you reach for any time the question is "which *X* has the most *Y*", whatever `X` and `Y` are.
 
 ### 3.10 Staging a query with `WITH`
 

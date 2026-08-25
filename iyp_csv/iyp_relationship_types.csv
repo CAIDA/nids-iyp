@@ -3,8 +3,8 @@ ORIGINATE,AS -> BGPPrefix,Observed BGP origin,2913590
 ROUTE_ORIGIN_AUTHORIZATION,AS -> RPKIPrefix,An RPKI ROA,825970
 PEERS_WITH,AS -- AS or AS -- BGPCollector,BGP peering or a route-collector monitoring session,1889047
 MEMBER_OF,AS -> IXP,IXP membership,126114
-PART_OF,IP -> Prefix or HostName -> DomainName,Containment,126488319
-RESOLVES_TO,HostName -> IP,DNS A/AAAA resolution,147998534
+PART_OF,IP -> Prefix or Prefix -> Prefix or HostName -> DomainName,"Containment, always stored contained -> container",126488319
+RESOLVES_TO,HostName -> IP,"DNS A/AAAA resolution; also reaches AuthoritativeNameServer nodes, which carry the HostName label too",147998534
 MANAGED_BY,DomainName -> AuthoritativeNameServer or AS -> Organization,Zone management / org ownership,53616886
 NAME,any -> Name,Canonical naming; multi-source,504356
 RANK,any -> Ranking,Ranking assignment,27801630

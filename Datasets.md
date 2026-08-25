@@ -15,7 +15,7 @@ This module queries the public **Neo4j** instance of IYP operated by the IHR pro
 | `IP` | A single IP address | `ip` |
 | `HostName` | A fully-qualified domain name | `name` |
 | `DomainName` | A non-FQDN registrable domain | `name` |
-| `AuthoritativeNameServer` | A DNS authoritative nameserver | `name` |
+| `AuthoritativeNameServer` | A DNS authoritative nameserver — these nodes carry the `HostName` label as well | `name` |
 | `IXP` | An Internet exchange point | `name` |
 | `Name` | A name string an entity is known by | `name` |
 | `Ranking` | A specific ranking system (e.g. CAIDA ASRank, Tranco) | `name` |
@@ -32,8 +32,8 @@ This module queries the public **Neo4j** instance of IYP operated by the IHR pro
 | `ROUTE_ORIGIN_AUTHORIZATION` | `AS` → `RPKIPrefix` | `reference_name` | An RPKI ROA |
 | `PEERS_WITH` | `AS` — `AS`, or `AS` — `BGPCollector` | `rel` (`AS`—`AS`); `num_v4_pfxs`, `num_v6_pfxs` (`AS`—`BGPCollector`) | A BGP peering session — any direct adjacency, not only settlement-free peering — or a route-collector monitoring session. `rel` records the business relationship: `0` peer-to-peer, `-1` (CAIDA) or `1` (BGPKIT) provider-to-customer, stored as `(provider)->(customer)` |
 | `MEMBER_OF` | `AS` → `IXP` | `reference_org` | IXP membership |
-| `PART_OF` | `IP` → `Prefix`; `HostName` → `DomainName` | — | Containment |
-| `RESOLVES_TO` | `HostName` → `IP` | `reference_name` | DNS A/AAAA resolution |
+| `PART_OF` | `IP` → `Prefix`; `Prefix` → `Prefix`; `HostName` → `DomainName` | — | Containment, always stored *contained* → *container*. The prefix-to-prefix form is how you ask whether a prefix is announced at some other length; because the direction is meaningful, the arrowhead decides which of two opposite facts you get back — see [Task 3](Task-3.md#roa-coverage-for-a-single-as) |
+| `RESOLVES_TO` | `HostName` → `IP` | `reference_name` | DNS A/AAAA resolution. Since `AuthoritativeNameServer` nodes are also `HostName`s, this same relationship reaches them — see [Task 2](Task-2.md#authoritative-nameservers) |
 | `MANAGED_BY` | `DomainName` → `AuthoritativeNameServer`; `AS` → `Organization` | — | Zone management / org ownership |
 | `NAME` | any node → `Name` | `reference_org` | Canonical naming; **multi-source** |
 | `RANK` | any node → `Ranking` | `rank` | Ranking assignment |

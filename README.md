@@ -61,6 +61,7 @@ nids-iyp
 ├- Task-3.md                                # Task 3 how-to guide
 ├- nids-iyp.ipynb                       ⬅  # Complete / Commit / Push
 ├- iyp_csv/                                 # Schema reference: labels, relationship types, properties
+├- slides/                                  # Lecture slides
 ├- requirements.txt                         # Dependencies (pip + venv)
 ├- pyproject.toml / uv.lock                 # Dependencies (uv)
 ```

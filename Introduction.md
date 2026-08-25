@@ -6,7 +6,7 @@
 - [Understanding the BGP Control Plane](https://github.com/CAIDA/nids-bgp-control-plane)
 - [Exploring Internet Topology with CAIDA's ITDK](https://github.com/CAIDA/nids-itdk)
 - [Regional Internet Registry, IRR, and RPKI](https://github.com/CAIDA/nids-irr-rpki-whois)
-- [Understanding the DNS Ecosystem](https://github.com/caida/nids-dns-ecosystem)
+- [Understanding the DNS Ecosystem](https://github.com/CAIDA/nids-dns-ecosystem)
 
 ## What Is the Internet Yellow Pages?
 
