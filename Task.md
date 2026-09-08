@@ -6,21 +6,16 @@ Complete the tasks below in order. All three tasks are completed inside [nids-iy
 
 ## Task 0: Setup and Data Access
 
-- step 1. Install dependencies and launch Jupyter — pick one:
+- step 1. Build the environment and launch Jupyter. [`nids-setup`](https://github.com/CAIDA/nids-setup#quickstart)
+  does both, and its quickstart gives the launcher and activation line for your platform:
 
   ```bash
-  # Option A: uv
-  uv sync
-  uv run jupyter lab nids-iyp.ipynb
+  git clone https://github.com/CAIDA/nids-setup.git     # beside this repo
+  cd nids-setup
+  ./setup.sh --local --modules IYP
   ```
 
-  ```bash
-  # Option B: pip + venv
-  python3 -m venv .venv
-  source .venv/bin/activate        # Windows: .venv\Scripts\activate
-  pip install -r requirements.txt
-  jupyter lab nids-iyp.ipynb
-  ```
+  Then, with the environment active: `jupyter lab nids-iyp/nids-iyp.ipynb`
 
 - step 2. Run the notebook's setup cell. It connects to the public IYP instance at
   `neo4j://iyp-bolt.ihr.live:7687`, which needs no credentials — there is nothing to configure (see

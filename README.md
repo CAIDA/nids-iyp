@@ -30,21 +30,25 @@ Other NIDS modules hand you one dataset at a time: an AS-ranking API, a table of
 
 ### Running Locally
 
-This notebook runs on your own machine — no hosted JupyterHub required. Pick one:
+This notebook runs on your own machine — no hosted JupyterHub required. Its environment is built
+by [`nids-setup`](https://github.com/CAIDA/nids-setup#quickstart), the same tool that sets up every
+other NIDS module:
 
 ```bash
-# Option A: uv
-uv sync
-uv run jupyter lab nids-iyp.ipynb
+git clone https://github.com/CAIDA/nids-setup.git     # beside this repo
+cd nids-setup
+./setup.sh --local --modules IYP
 ```
 
+The quickstart there gives the Windows launcher and the activation line for each platform. Once the
+environment is active:
+
 ```bash
-# Option B: pip + venv
-python3 -m venv .venv
-source .venv/bin/activate        # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-jupyter lab nids-iyp.ipynb
+jupyter lab nids-iyp/nids-iyp.ipynb
 ```
+
+`requirements.txt` lists this module's dependencies if you would rather build the environment
+yourself.
 
 No database setup is required. The notebook queries the public IYP instance at `neo4j://iyp-bolt.ihr.live:7687`, which is read-only and needs no credentials — see [Datasets](Datasets.md#access-model). Because it is a live shared service rather than a frozen snapshot, record the date you ran your queries: the data is reloaded as its sources update.
 
@@ -62,8 +66,7 @@ nids-iyp
 ├- nids-iyp.ipynb                       ⬅  # Complete / Commit / Push
 ├- iyp_csv/                                 # Schema reference: labels, relationship types, properties
 ├- slides/                                  # Lecture slides
-├- requirements.txt                         # Dependencies (pip + venv)
-├- pyproject.toml / uv.lock                 # Dependencies (uv)
+├- requirements.txt                         # Dependencies
 ```
 
 ### Glossary
