@@ -22,26 +22,26 @@ Other NIDS modules hand you one dataset at a time: an AS-ranking API, a table of
 - step 2 [read the dataset overview](Datasets.md)
 - step 3 [read the Cypher guide](Cypher.md)
 - step 4 [review the tasks](Task.md)
-- step 5 set up your local Python environment (see "Running Locally" below)
+- step 5 set the module up on the hub (see "Running this module" below)
 - step 6 launch Jupyter and complete nids-iyp.ipynb
   - complete each task by replacing the `# YOUR CODE HERE` sections
   - answer all nine questions
 - step 7 save the notebook, commit, and push to github
 
-### Running Locally
+### Running this module
 
-This notebook runs on your own machine — no hosted JupyterHub required. Its environment is built
-by [`nids-setup`](https://github.com/CAIDA/nids-setup#quickstart), the same tool that sets up every
-other NIDS module:
+This module runs on the NRP JupyterHub. Its environment is built by
+[`nids-setup`](https://github.com/CAIDA/nids-setup), the same tool that sets up every other NIDS
+module — from a terminal inside your notebook server:
 
 ```bash
 git clone https://github.com/CAIDA/nids-setup.git     # beside this repo
 cd nids-setup
-./setup.sh --local --modules IYP
+./setup.sh --nrp --assignment IYP
 ```
 
-The quickstart there gives the Windows launcher and the activation line for each platform. Once the
-environment is active:
+On the hub the image already supplies the packages, so this clones the module and stages its data
+rather than building an environment. Once that is done:
 
 ```bash
 jupyter lab nids-iyp/nids-iyp.ipynb
