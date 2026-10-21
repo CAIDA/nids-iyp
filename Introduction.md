@@ -1,4 +1,4 @@
-[README](README.md) | Introduction ⮕ | [Datasets](Datasets.md) | [Cypher](Cypher.md) | [Tasks](Task.md) | [Task 1](Task-1.md) | [Task 2](Task-2.md) | [Task 3](Task-3.md) | [Notebook](nids-iyp.ipynb)
+[README](README.md) | Introduction ⮕ | [Datasets](Datasets.md) | [Cypher](Cypher.md) | [Tasks](Task.md) | [Task 1 Guide](Task-1.md) | [Task 2 Guide](Task-2.md) | [Task 3 Guide](Task-3.md) | [Notebook](nids-iyp.ipynb)
 
 ### Prerequisite NIDS Assignments
 
@@ -44,4 +44,4 @@ An Autonomous System doesn't exist in isolation — its position in the Internet
 - Fontugne et al., ["The Wisdom of the Measurement Crowd: Building the Internet Yellow Pages, a Knowledge Graph for the Internet"](https://www.iijlab.net/en/members/romain/pdf/romain_imc2024.pdf), ACM IMC 2024 — the design paper behind IYP.
 - [github.com/InternetHealthReport/internet-yellow-pages](https://github.com/InternetHealthReport/internet-yellow-pages) — the full node-type and relationship-type schema reference, source of the summary in [Datasets](Datasets.md).
 
-[README](README.md) | Introduction ⮕ | [Datasets](Datasets.md) | [Cypher](Cypher.md) | [Tasks](Task.md) | [Task 1](Task-1.md) | [Task 2](Task-2.md) | [Task 3](Task-3.md) | [Notebook](nids-iyp.ipynb)
+[README](README.md) | Introduction ⮕ | [Datasets](Datasets.md) | [Cypher](Cypher.md) | [Tasks](Task.md) | [Task 1 Guide](Task-1.md) | [Task 2 Guide](Task-2.md) | [Task 3 Guide](Task-3.md) | [Notebook](nids-iyp.ipynb)

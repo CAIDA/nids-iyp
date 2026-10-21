@@ -1,4 +1,4 @@
-[README](README.md) | [Introduction](Introduction.md) | [Datasets](Datasets.md) | [Cypher](Cypher.md) | [Tasks](Task.md) | [Task 1](Task-1.md) | Task 2 ⮕ | [Task 3](Task-3.md) | [Notebook](nids-iyp.ipynb)
+[README](README.md) | [Introduction](Introduction.md) | [Datasets](Datasets.md) | [Cypher](Cypher.md) | [Tasks](Task.md) | [Task 1 Guide](Task-1.md) | Task 2 Guide ⮕ | [Task 3 Guide](Task-3.md) | [Notebook](nids-iyp.ipynb)
 
 # Task 2: Bridging BGP and DNS in One Traversal — How-To Guide
 
@@ -63,4 +63,4 @@ Chain those two together (the nameservers reachable inside AS2501's address spac
 - **Q2.b** — Which nameservers manage the most domains inside AS2501's address space? Is domain hosting concentrated in a handful of nameservers, or spread evenly?
 - **Q2.c** — This is the same kind of question [`nids-dns-ecosystem`](https://github.com/CAIDA/nids-dns-ecosystem) answers by loading OpenINTEL DNS measurements and a separately-obtained BGP prefix-to-AS mapping, then joining them in Spark across two independently-fetched datasets. What did chaining `ORIGINATE` → `PART_OF` → `RESOLVES_TO` in one Cypher query do in a single step that took multiple stages there? Is there anything the manual approach gives you that the graph traversal doesn't (e.g. control over which snapshot date, or access to raw DNS response fields not modeled in the graph)?
 
-[README](README.md) | [Introduction](Introduction.md) | [Datasets](Datasets.md) | [Cypher](Cypher.md) | [Tasks](Task.md) | [Task 1](Task-1.md) | Task 2 ⮕ | [Task 3](Task-3.md) | [Notebook](nids-iyp.ipynb)
+[README](README.md) | [Introduction](Introduction.md) | [Datasets](Datasets.md) | [Cypher](Cypher.md) | [Tasks](Task.md) | [Task 1 Guide](Task-1.md) | Task 2 Guide ⮕ | [Task 3 Guide](Task-3.md) | [Notebook](nids-iyp.ipynb)

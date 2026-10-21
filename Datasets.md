@@ -1,4 +1,4 @@
-[README](README.md) | [Introduction](Introduction.md) | Datasets ⮕ | [Cypher](Cypher.md) | [Tasks](Task.md) | [Task 1](Task-1.md) | [Task 2](Task-2.md) | [Task 3](Task-3.md) | [Notebook](nids-iyp.ipynb)
+[README](README.md) | [Introduction](Introduction.md) | Datasets ⮕ | [Cypher](Cypher.md) | [Tasks](Task.md) | [Task 1 Guide](Task-1.md) | [Task 2 Guide](Task-2.md) | [Task 3 Guide](Task-3.md) | [Notebook](nids-iyp.ipynb)
 
 ## Database
 
@@ -82,4 +82,4 @@ db.verify_connectivity()
 
 No credentials, no config file, nothing to copy — this module only ever targets the public instance.
 
-[README](README.md) | [Introduction](Introduction.md) | Datasets ⮕ | [Cypher](Cypher.md) | [Tasks](Task.md) | [Task 1](Task-1.md) | [Task 2](Task-2.md) | [Task 3](Task-3.md) | [Notebook](nids-iyp.ipynb)
+[README](README.md) | [Introduction](Introduction.md) | Datasets ⮕ | [Cypher](Cypher.md) | [Tasks](Task.md) | [Task 1 Guide](Task-1.md) | [Task 2 Guide](Task-2.md) | [Task 3 Guide](Task-3.md) | [Notebook](nids-iyp.ipynb)

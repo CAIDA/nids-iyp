@@ -1,4 +1,4 @@
-README ⮕ | [Introduction](Introduction.md) | [Datasets](Datasets.md) | [Cypher](Cypher.md) | [Tasks](Task.md) | [Task 1](Task-1.md) | [Task 2](Task-2.md) | [Task 3](Task-3.md) | [Notebook](nids-iyp.ipynb)
+README ⮕ | [Introduction](Introduction.md) | [Datasets](Datasets.md) | [Cypher](Cypher.md) | [Tasks](Task.md) | [Task 1 Guide](Task-1.md) | [Task 2 Guide](Task-2.md) | [Task 3 Guide](Task-3.md) | [Notebook](nids-iyp.ipynb)
 
 # Exploring the Internet Yellow Pages (IYP): A Graph Model of Internet Infrastructure
 
@@ -87,4 +87,4 @@ nids-iyp
 - **Ranking**: A node representing a specific popularity or importance ranking (e.g. CAIDA ASRank, Tranco, Chrome UX Report), linked to the ASes or domains it ranks via `RANK` relationships.
 - **Tag**: A node representing a classification applied to a resource (e.g. `"RPKI Invalid"`, `"Academic"`), linked via `CATEGORIZED` relationships.
 
-README ⮕ | [Introduction](Introduction.md) | [Datasets](Datasets.md) | [Cypher](Cypher.md) | [Tasks](Task.md) | [Task 1](Task-1.md) | [Task 2](Task-2.md) | [Task 3](Task-3.md) | [Notebook](nids-iyp.ipynb)
+README ⮕ | [Introduction](Introduction.md) | [Datasets](Datasets.md) | [Cypher](Cypher.md) | [Tasks](Task.md) | [Task 1 Guide](Task-1.md) | [Task 2 Guide](Task-2.md) | [Task 3 Guide](Task-3.md) | [Notebook](nids-iyp.ipynb)

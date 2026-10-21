@@ -1,4 +1,4 @@
-[README](README.md) | [Introduction](Introduction.md) | [Datasets](Datasets.md) | [Cypher](Cypher.md) | Tasks ⮕ | [Task 1](Task-1.md) | [Task 2](Task-2.md) | [Task 3](Task-3.md) | [Notebook](nids-iyp.ipynb)
+[README](README.md) | [Introduction](Introduction.md) | [Datasets](Datasets.md) | [Cypher](Cypher.md) | Tasks ⮕ | [Task 1 Guide](Task-1.md) | [Task 2 Guide](Task-2.md) | [Task 3 Guide](Task-3.md) | [Notebook](nids-iyp.ipynb)
 
 # Tasks
 
@@ -58,4 +58,4 @@ Compare what an AS is cryptographically authorized to originate (an RPKI ROA) ag
 - [ ] **Q3.b**: Across the whole graph, which 20 ASes originate the most prefixes tagged `"RPKI Invalid"`? Do any of the four running-example ASes (AS6461, AS2906, AS4837, AS2497) appear in that list?
 - [ ] **Q3.c**: Does an `"RPKI Invalid"` tag prove a prefix hijack? What else could produce that tag (non-adoption, misconfiguration, legitimate deaggregation)? How does this graph-pattern comparison relate to the manual IRR/RPKI/BGP comparison you did (or would do) in [`nids-irr-rpki-whois`](https://github.com/CAIDA/nids-irr-rpki-whois)?
 
-[README](README.md) | [Introduction](Introduction.md) | [Datasets](Datasets.md) | [Cypher](Cypher.md) | Tasks ⮕ | [Task 1](Task-1.md) | [Task 2](Task-2.md) | [Task 3](Task-3.md) | [Notebook](nids-iyp.ipynb)
+[README](README.md) | [Introduction](Introduction.md) | [Datasets](Datasets.md) | [Cypher](Cypher.md) | Tasks ⮕ | [Task 1 Guide](Task-1.md) | [Task 2 Guide](Task-2.md) | [Task 3 Guide](Task-3.md) | [Notebook](nids-iyp.ipynb)

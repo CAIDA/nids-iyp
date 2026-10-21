@@ -1,4 +1,4 @@
-[README](README.md) | [Introduction](Introduction.md) | [Datasets](Datasets.md) | [Cypher](Cypher.md) | [Tasks](Task.md) | Task 1 ⮕ | [Task 2](Task-2.md) | [Task 3](Task-3.md) | [Notebook](nids-iyp.ipynb)
+[README](README.md) | [Introduction](Introduction.md) | [Datasets](Datasets.md) | [Cypher](Cypher.md) | [Tasks](Task.md) | Task 1 Guide ⮕ | [Task 2 Guide](Task-2.md) | [Task 3 Guide](Task-3.md) | [Notebook](nids-iyp.ipynb)
 
 # Task 1: The AS Ecosystem — How-To Guide
 
@@ -74,4 +74,4 @@ Ground each answer in what your own queries actually return, not in the example 
 - **Q1.b** — How does each of the three ASes' IXP membership count compare to the global top 10? Is IXP membership something all large networks do, or does it vary by the kind of network (transit ISP vs. content provider vs. national gateway) discussed in [`nids-asn-introduction`](https://github.com/CAIDA/nids-asn-introduction)?
 - **Q1.c** — Do ASRank, peering degree, and IXP membership move together for these three ASes, or does one stand out from the others? What does that tell you about what CAIDA ASRank is actually measuring?
 
-[README](README.md) | [Introduction](Introduction.md) | [Datasets](Datasets.md) | [Cypher](Cypher.md) | [Tasks](Task.md) | Task 1 ⮕ | [Task 2](Task-2.md) | [Task 3](Task-3.md) | [Notebook](nids-iyp.ipynb)
+[README](README.md) | [Introduction](Introduction.md) | [Datasets](Datasets.md) | [Cypher](Cypher.md) | [Tasks](Task.md) | Task 1 Guide ⮕ | [Task 2 Guide](Task-2.md) | [Task 3 Guide](Task-3.md) | [Notebook](nids-iyp.ipynb)

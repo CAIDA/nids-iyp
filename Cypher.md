@@ -1,4 +1,4 @@
-[README](README.md) | [Introduction](Introduction.md) | [Datasets](Datasets.md) | Cypher ⮕ | [Tasks](Task.md) | [Task 1](Task-1.md) | [Task 2](Task-2.md) | [Task 3](Task-3.md) | [Notebook](nids-iyp.ipynb)
+[README](README.md) | [Introduction](Introduction.md) | [Datasets](Datasets.md) | Cypher ⮕ | [Tasks](Task.md) | [Task 1 Guide](Task-1.md) | [Task 2 Guide](Task-2.md) | [Task 3 Guide](Task-3.md) | [Notebook](nids-iyp.ipynb)
 
 # Cypher Guide: Querying IYP from Python
 
@@ -203,4 +203,4 @@ The full rules are in [Datasets](Datasets.md#writing-efficient-queries); the sho
 - **Avoid unbounded variable-length paths** (`-[*]-`) — chain explicit relationship types instead.
 - **Prototype with `LIMIT`**, and return only the properties you need rather than whole nodes.
 
-[README](README.md) | [Introduction](Introduction.md) | [Datasets](Datasets.md) | Cypher ⮕ | [Tasks](Task.md) | [Task 1](Task-1.md) | [Task 2](Task-2.md) | [Task 3](Task-3.md) | [Notebook](nids-iyp.ipynb)
+[README](README.md) | [Introduction](Introduction.md) | [Datasets](Datasets.md) | Cypher ⮕ | [Tasks](Task.md) | [Task 1 Guide](Task-1.md) | [Task 2 Guide](Task-2.md) | [Task 3 Guide](Task-3.md) | [Notebook](nids-iyp.ipynb)
