@@ -32,7 +32,7 @@ Complete the tasks below in order. All three tasks are completed inside [nids-iy
 
 **Builds on:** [nids-asn-introduction](https://github.com/CAIDA/nids-asn-introduction)
 
-Using three running-example autonomous systems — **Zayo (AS6461)**, **Netflix (AS2906)**, and **China Unicom (AS4837)** — explore how IYP represents an AS's position in the Internet: what it's called (and whether sources agree), how it ranks, which IXPs it belongs to, and how many other ASes it peers with directly.
+Using three running-example autonomous systems — **Zayo (AS6461)**, **Netflix (AS2906)**, and **China Unicom (AS4837)** — explore how IYP represents an AS's position in the Internet: what it's called (and whether sources agree), how it ranks, which IXPs it belongs to, and how many other ASes it peers with directly. Read the [Task 1 Guide](Task-1.md) for additional Guidance.
 
 - [ ] **Q1.a**: For each of the three ASes, resolve a canonical name across multiple `NAME` sources and look up its CAIDA ASRank. Do the sources agree on the name? Report both the merged name and each individual source's claim.
 - [ ] **Q1.b**: Which 10 IXPs have the most AS members globally? Separately, how many IXPs does each of the three ASes belong to?
@@ -42,7 +42,7 @@ Using three running-example autonomous systems — **Zayo (AS6461)**, **Netflix 
 
 **Builds on:** [nids-asn-introduction](https://github.com/CAIDA/nids-asn-introduction), [nids-dns-ecosystem](https://github.com/CAIDA/nids-dns-ecosystem)
 
-Using **IIJ (AS2497)** and **AS2501** as the primary examples — the same two ASes IYP's own tutorial uses for this kind of query — walk from an AS's announced BGP address space to the domain names hosted inside it, in a single Cypher pattern. Compare against **Zayo (AS6461)**, a pure transit backbone of comparable stature, to see what a network with little hosted content looks like by the same measure.
+Using **IIJ (AS2497)** and **AS2501** as the primary examples — the same two ASes IYP's own tutorial uses for this kind of query — walk from an AS's announced BGP address space to the domain names hosted inside it, in a single Cypher pattern. Compare against **Zayo (AS6461)**, a pure transit backbone of comparable stature, to see what a network with little hosted content looks like by the same measure. Read the [Task 2 Guide](Task-2.md) for additional Guidance.
 
 - [ ] **Q2.a**: For AS2497 and AS6461, how many distinct popular hostnames resolve into each AS's announced prefixes, both in total and per announced prefix? What does the difference tell you about what kind of network each one is?
 - [ ] **Q2.b**: For AS2501, which authoritative nameservers manage the most domains hosted in its address space? Produce a table of nameserver → domain count.
@@ -52,7 +52,7 @@ Using **IIJ (AS2497)** and **AS2501** as the primary examples — the same two A
 
 **Builds on:** [nids-irr-rpki-whois](https://github.com/CAIDA/nids-irr-rpki-whois)
 
-Compare what an AS is cryptographically authorized to originate (an RPKI ROA) against what is actually observed in BGP, for **Zayo (AS6461)**, and then broaden the lens to a global scan of prefixes IYP has tagged `"RPKI Invalid"`.
+Compare what an AS is cryptographically authorized to originate (an RPKI ROA) against what is actually observed in BGP, for **Zayo (AS6461)**, and then broaden the lens to a global scan of prefixes IYP has tagged `"RPKI Invalid"`. Read the [Task 3 Guide](Task-3.md) for additional Guidance.
 
 - [ ] **Q3.a**: For AS6461, find every RPKI ROA (`ROUTE_ORIGIN_AUTHORIZATION`) that has no exact matching observed `BGPPrefix`. How many are there? Break them down by whether the address space is announced at some *other* prefix length — more-specific, less-specific, or not at all — and explain what each group plausibly means.
 - [ ] **Q3.b**: Across the whole graph, which 20 ASes originate the most prefixes tagged `"RPKI Invalid"`? Do any of the four running-example ASes (AS6461, AS2906, AS4837, AS2497) appear in that list?
