@@ -4,7 +4,7 @@ README ⮕ | [Introduction](Introduction.md) | [Datasets](Datasets.md) | [Cypher
 
 # Exploring the Internet Yellow Pages (IYP): A Graph Model of Internet Infrastructure
 
-**GitHub:** https://github.com/CAIDA/nids-iyp
+
 
 **authors:** Bradley Huffaker, Romain Fontugne, Malte Tashiro
 
